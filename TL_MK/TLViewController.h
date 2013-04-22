@@ -13,7 +13,7 @@
 
 @interface TLViewController : UIViewController <MKMapViewDelegate>
 
-@property (weak, nonatomic) IBOutlet MKMapView *mapView;
+@property (strong, nonatomic) MKMapView *mapView;
 @property (nonatomic, retain) MKPolyline *routeLine;
 @property (nonatomic, retain) MKPolylineView *routeLineView;
 

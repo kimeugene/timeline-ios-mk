@@ -21,6 +21,17 @@
     TLBackgroundPingOperation *backgroundPing = [[TLBackgroundPingOperation alloc] init];
     [self.operationQueue addOperation:backgroundPing];
     
+    // Add the main view controller to the view stack
+    [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"NavigationBar.png"] forBarMetrics:UIBarMetricsDefault];
+
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.mainViewController = [[TLViewController alloc] init];
+    self.navigationController = [[UINavigationController alloc] initWithRootViewController:self.mainViewController];
+    
+    
+    self.window.rootViewController = self.navigationController;
+    [self.window makeKeyAndVisible];
+    
     return YES;
 }
 							

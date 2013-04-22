@@ -25,7 +25,14 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+	
+    // Do any additional setup after loading the view, typically from a nib.
+    CGRect frame = self.view.frame;
+    frame.origin.y = 0;
+    self.mapView = [[MKMapView alloc] initWithFrame:frame];
+    NSLog(@"MKMapView will take the frame: %@", NSStringFromCGRect(frame));
+    [self.view addSubview:self.mapView];
+    NSLog(@"yes");
 }
 
 - (void)navigateTimeline:(NSString *)direction
@@ -188,6 +195,8 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    
+    [self setTitle:@"Saturday, April 4th"];
     
     NSString *email = @"fitz5@timeline.pwn";
 

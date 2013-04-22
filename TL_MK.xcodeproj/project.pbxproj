@@ -40,6 +40,8 @@
 		63E5030217025148000142B1 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63E5030117025148000142B1 /* CoreLocation.framework */; };
 		63E5030717028DA3000142B1 /* TLBackgroundPingOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 63E5030417028DA3000142B1 /* TLBackgroundPingOperation.m */; };
 		63E5030817028DA3000142B1 /* TLCoreLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 63E5030617028DA3000142B1 /* TLCoreLocation.m */; };
+		C4832E131726004900973EE3 /* NavigationBar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C4832E111726004900973EE3 /* NavigationBar@2x.png */; };
+		C4832E141726004900973EE3 /* NavigationBar.png in Resources */ = {isa = PBXBuildFile; fileRef = C4832E121726004900973EE3 /* NavigationBar.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -98,6 +100,8 @@
 		63E5030417028DA3000142B1 /* TLBackgroundPingOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TLBackgroundPingOperation.m; path = ../TLBackgroundPingOperation.m; sourceTree = "<group>"; };
 		63E5030517028DA3000142B1 /* TLCoreLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TLCoreLocation.h; path = ../TLCoreLocation.h; sourceTree = "<group>"; };
 		63E5030617028DA3000142B1 /* TLCoreLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TLCoreLocation.m; path = ../TLCoreLocation.m; sourceTree = "<group>"; };
+		C4832E111726004900973EE3 /* NavigationBar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "NavigationBar@2x.png"; path = "Images/Chrome/NavigationBar@2x.png"; sourceTree = "<group>"; };
+		C4832E121726004900973EE3 /* NavigationBar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = NavigationBar.png; path = Images/Chrome/NavigationBar.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -179,6 +183,7 @@
 		63E502AE16FBBB09000142B1 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				C4832E0F1726001B00973EE3 /* Images */,
 				63E502FF1700DCB9000142B1 /* pic.png */,
 				63E502F81700BCBD000142B1 /* command.json */,
 				63E502AF16FBBB0A000142B1 /* TL_MK-Info.plist */,
@@ -228,6 +233,23 @@
 				63E502EB16FBD06B000142B1 /* MBProgressHUD.m */,
 			);
 			name = MBProgressHUD;
+			sourceTree = "<group>";
+		};
+		C4832E0F1726001B00973EE3 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				C4832E101726002100973EE3 /* Chrome */,
+			);
+			name = Images;
+			sourceTree = "<group>";
+		};
+		C4832E101726002100973EE3 /* Chrome */ = {
+			isa = PBXGroup;
+			children = (
+				C4832E111726004900973EE3 /* NavigationBar@2x.png */,
+				C4832E121726004900973EE3 /* NavigationBar.png */,
+			);
+			name = Chrome;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -289,6 +311,8 @@
 				63E502C116FBBB0A000142B1 /* MainStoryboard.storyboard in Resources */,
 				63E502F91700BCBD000142B1 /* command.json in Resources */,
 				63E503001700DCB9000142B1 /* pic.png in Resources */,
+				C4832E131726004900973EE3 /* NavigationBar@2x.png in Resources */,
+				C4832E141726004900973EE3 /* NavigationBar.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -437,6 +461,7 @@
 				63E502C916FBBB0A000142B1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

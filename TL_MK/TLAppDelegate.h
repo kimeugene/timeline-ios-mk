@@ -7,12 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TLViewController.h"
 #import "TLBackgroundPingOperation.h"
 
 @interface TLAppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) NSOperationQueue *operationQueue;
+@property (strong, nonatomic) TLViewController *mainViewController;
+@property (strong, nonatomic) UINavigationController *navigationController;
 @property UIBackgroundTaskIdentifier bgTask;
 
 @end
