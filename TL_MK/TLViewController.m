@@ -153,7 +153,7 @@
 {
     MKPolylineView* lineView = [[MKPolylineView alloc] initWithPolyline:self.routeLine];
     lineView.fillColor = [UIColor whiteColor];
-    lineView.strokeColor = [UIColor whiteColor];
+    lineView.strokeColor = [UIColor orangeColor];
     lineView.lineWidth = 4;
     return lineView;
 }
