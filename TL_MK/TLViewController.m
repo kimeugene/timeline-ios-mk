@@ -84,12 +84,12 @@
     }
 }
 
-- (IBAction)leftNav:(id)sender
+- (void)leftNav
 {
     [self navigateTimeline:@"back"];
 }
 
-- (IBAction)rightNav:(id)sender
+- (void)rightNav
 {
     [self navigateTimeline:@"forward"];
 }
@@ -196,9 +196,26 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    
     [self setTitle:@"Saturday, April 4th"];
     
+    // Add the left button
+    UIButton *leftStepButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 52, 56, 40, 40)];
+    [leftStepButton setBackgroundColor:[UIColor colorWithRed:35.0/255
+                                                       green:35.0/255
+                                                        blue:35.0/255
+                                                       alpha:0.96] ];
+    [leftStepButton addTarget:self action:@selector(leftNav) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:leftStepButton];
+    
+    // Add the right button
+    UIButton *rightStepButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 52, 108, 40, 40)];
+    [rightStepButton setBackgroundColor:[UIColor colorWithRed:35.0/255
+                                                        green:35.0/255
+                                                         blue:35.0/255
+                                                        alpha:0.96] ];
+    [rightStepButton addTarget:self action:@selector(rightNav) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:rightStepButton];
+
     NSString *email = @"fitz5@timeline.pwn";
 
     // use different email for simulator
