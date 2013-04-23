@@ -63,16 +63,17 @@
     if (new_index > 0){
         NSNumber *latitude = [[self.timeline objectAtIndex:new_index] objectAtIndex:0];
         NSNumber *longitude = [[self.timeline objectAtIndex:new_index] objectAtIndex:1];
+        NSString *time = [[self.timeline objectAtIndex:new_index] objectAtIndex:2];
+        
         NSLog(@"New lat: %@", latitude);
         NSLog(@"New long: %@", longitude);
         
-        NSString *description = @"description";
-        NSString *address = @"address";
+        NSString *address = @"venue";
         
         CLLocationCoordinate2D coordinate;
         coordinate.latitude = latitude.doubleValue;
         coordinate.longitude = longitude.doubleValue;
-        TLLocation *annotation = [[TLLocation alloc] initWithName:description address:address coordinate:coordinate];
+        TLLocation *annotation = [[TLLocation alloc] initWithName:time address:address coordinate:coordinate];
         
         // remove previous location
         [_mapView removeAnnotation:self.currentLocation];
@@ -105,26 +106,26 @@
     }
     
     self.timeline = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil];
-
+    
     NSInteger cnt = self.timeline.count;
-
+    
     if (cnt > 0) {
         NSNumber *first_latitude = [[self.timeline objectAtIndex:0] objectAtIndex:0];
         NSNumber *first_longitude = [[self.timeline objectAtIndex:0] objectAtIndex:1];
-        NSString *first_description = @"description";
+        NSString *first_time = [[self.timeline objectAtIndex:0] objectAtIndex:2];
         NSString *first_address = @"address";
         
         CLLocationCoordinate2D first_coordinate;
         first_coordinate.latitude = first_latitude.doubleValue;
         first_coordinate.longitude = first_longitude.doubleValue;
-        TLLocation *first_annotation = [[TLLocation alloc] initWithName:first_description address:first_address coordinate:first_coordinate];
+        TLLocation *first_annotation = [[TLLocation alloc] initWithName:first_time address:first_address coordinate:first_coordinate];
         
         // keep track of current location
         self.currentLocation = first_annotation;
         self.currentLocation.index = 0;
         
         [_mapView addAnnotation:first_annotation];
-
+        
         
         CLLocationCoordinate2D coordinateArray[cnt];
         
@@ -132,27 +133,27 @@
             coordinateArray[i] = CLLocationCoordinate2DMake([[[self.timeline objectAtIndex:i] objectAtIndex:0] doubleValue], [[[self.timeline objectAtIndex:i] objectAtIndex:1] doubleValue]);
         }
         
-
+        
         
         self.routeLine = [MKPolyline polylineWithCoordinates:coordinateArray count:cnt];
         [self.mapView setVisibleMapRect:[self.routeLine boundingMapRect]];
         
         [self.mapView addOverlay:self.routeLine];
         
-
-    
-    
+        
+        
+        
         NSNumber *last_latitude = [[self.timeline lastObject] objectAtIndex:0];
         NSNumber *last_longitude = [[self.timeline lastObject] objectAtIndex:1];
-        NSString *last_description = @"description";
+        NSString *last_time = [[self.timeline lastObject] objectAtIndex:2];
         NSString *last_address = @"address";
         
         CLLocationCoordinate2D last_coordinate;
         last_coordinate.latitude = last_latitude.doubleValue;
         last_coordinate.longitude = last_longitude.doubleValue;
-        TLLocation *last_annotation = [[TLLocation alloc] initWithName:last_description address:last_address coordinate:last_coordinate];
+        TLLocation *last_annotation = [[TLLocation alloc] initWithName:last_time address:last_address coordinate:last_coordinate];
         [_mapView addAnnotation:last_annotation];
-    
+        
     }
 }
 
@@ -218,8 +219,8 @@
     NSString *email = @"fitz5@timeline.pwn";
 
     // use different email for simulator
-    #if !(TARGET_IPHONE_SIMULATOR)
-        NSString *email = @"emulator@timeline.pwn";
+    #if (TARGET_IPHONE_SIMULATOR)
+        email = @"emulator@timeline.pwn";
     #endif
 
     NSString *url = [NSString stringWithFormat: @"http://ec2-50-16-36-166.compute-1.amazonaws.com/get/%@/2013-04-05", email];
