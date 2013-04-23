@@ -23,13 +23,11 @@
     
     // Add the main view controller to the view stack
     [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"NavigationBar.png"] forBarMetrics:UIBarMetricsDefault];
+    [[UINavigationBar appearance] setBarStyle:UIBarStyleBlackTranslucent];
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.mainViewController = [[TLViewController alloc] init];
     self.navigationController = [[UINavigationController alloc] initWithRootViewController:self.mainViewController];
-    UIBarButtonItem *leftButton = [[UIBarButtonItem alloc] initWithTitle:@"<"
-                                                                    style:UIBarButtonItemStylePlain target:nil action:nil];
-
     
     
     self.window.rootViewController = self.navigationController;
