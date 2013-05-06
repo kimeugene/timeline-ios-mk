@@ -219,11 +219,14 @@
     NSString *email = @"fitz5@timeline.pwn";
 
     // use different email for simulator
-    #if (TARGET_IPHONE_SIMULATOR)
+    #if TARGET_IPHONE_SIMULATOR
         email = @"emulator@timeline.pwn";
+        NSLog(@"Simulator");
+    #else
+        NSLog(@"Not Simulator");
     #endif
 
-    NSString *url = [NSString stringWithFormat: @"http://ec2-50-16-36-166.compute-1.amazonaws.com/get/%@/2013-04-05", email];
+    NSString *url = [NSString stringWithFormat: @"http://ec2-50-16-36-166.compute-1.amazonaws.com/get/%@/2013-04-29", email];
 
     ASIHTTPRequest *_request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:url]];
     __weak ASIHTTPRequest *request = _request;

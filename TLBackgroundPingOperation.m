@@ -22,7 +22,7 @@
     coreLocation.delegate = self;
     
     // Set a timer that executes every 5 minutes
-    [NSTimer scheduledTimerWithTimeInterval:5*60
+    [NSTimer scheduledTimerWithTimeInterval:5
                                      target:self
                                    selector:@selector(getSingleLocation)
                                    userInfo:nil
@@ -30,7 +30,8 @@
     
     // Fire off the first one
     [self getSingleLocation];
-    
+    [coreLocation.locMgr startMonitoringSignificantLocationChanges];
+
     // Start the run loop so this operation stays active
     NSLog(@"TBackgroundPingOperation: main() executed");
     NSRunLoop* runLoop = [NSRunLoop currentRunLoop];
@@ -39,20 +40,29 @@
 
 - (void)getSingleLocation
 {
-    [coreLocation.locMgr startUpdatingLocation];
+    NSLog(@"getsingleLocation");
+    //[coreLocation.locMgr startUpdatingLocation];
 }
 
 - (void)locationUpdate:(CLLocation *)location {    
-    NSLog(@"TBackgroundPingOperation locationUpdate: location.timestamp: %@", location.timestamp);
-    NSLog(@"TBackgroundPingOperation locationUpdate: %@", [location description]);
+    // NSLog(@"TBackgroundPingOperation locationUpdate: location.timestamp: %@", location.timestamp);
+    // NSLog(@"TBackgroundPingOperation locationUpdate: %@", [location description]);
     
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://ec2-50-16-36-166.compute-1.amazonaws.com/post"]];
     self.request = [[NSMutableURLRequest alloc] initWithURL:url];
     NSDate *date = [[NSDate alloc] init];
     NSTimeInterval currentTimestamp = [date timeIntervalSince1970];
     
+    NSString *email = @"fitz5@timeline.pwn";
+
+    // use different email for simulator
+    #if TARGET_IPHONE_SIMULATOR
+        email = @"emulator@timeline.pwn";
+    #endif
+
+    
     // Post:
-    NSString *postString = [NSString stringWithFormat:@"email=fitz5@timeline.pwn&timestamp=%i&long=%f&lat=%f", abs(currentTimestamp), location.coordinate.longitude, location.coordinate.latitude];
+    NSString *postString = [NSString stringWithFormat:@"email=%@&timestamp=%i&long=%f&lat=%f", email, abs(currentTimestamp), location.coordinate.longitude, location.coordinate.latitude];
     [self.request setHTTPMethod:@"POST"];
     [self.request setValue:@"multipart/form-data" forHTTPHeaderField:@"Content-Type"];
     [self.request setValue:[NSString stringWithFormat:@"%d", [postString length]] forHTTPHeaderField:@"Content-Length"];
@@ -67,6 +77,7 @@
     requestNumber++;
     
     
+    [coreLocation.locMgr startMonitoringSignificantLocationChanges]; // We may be able to remove this
     [coreLocation.locMgr stopUpdatingLocation];
 }
 
