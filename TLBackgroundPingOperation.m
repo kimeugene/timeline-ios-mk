@@ -21,6 +21,11 @@
     coreLocation = [[TLCoreLocation alloc] init];
     coreLocation.delegate = self;
     
+    // Start the run loop so this operation stays active
+    NSLog(@"TBackgroundPingOperation: main() executed");
+    NSRunLoop* runLoop = [NSRunLoop currentRunLoop];
+    [runLoop run];
+
     // Set a timer that executes every 5 minutes
     //[NSTimer scheduledTimerWithTimeInterval:5
     //                                 target:self
@@ -28,31 +33,28 @@
         //                           userInfo:nil
           //                          repeats:YES];
     
+    [self getLocation];
+}
+
+- (void)getLocation
+{
+    NSLog(@"inside getLocation");
+    
     // Fire off the first one
     [coreLocation.locMgr startUpdatingLocation];
-
-    // Start the run loop so this operation stays active
-    NSLog(@"TBackgroundPingOperation: main() executed");
-    NSRunLoop* runLoop = [NSRunLoop currentRunLoop];
-    [runLoop run];
 }
 
 - (void)locationUpdate:(CLLocation *)location {    
     // NSLog(@"TBackgroundPingOperation locationUpdate: location.timestamp: %@", location.timestamp);
-    // NSLog(@"TBackgroundPingOperation locationUpdate: %@", [location description]);
+     NSLog(@"TBackgroundPingOperation locationUpdate: %@", [location description]);
     
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://ec2-50-16-36-166.compute-1.amazonaws.com/post"]];
     self.request = [[NSMutableURLRequest alloc] initWithURL:url];
     NSDate *date = [[NSDate alloc] init];
     NSTimeInterval currentTimestamp = [date timeIntervalSince1970];
     
-    NSString *email = @"fitz5@timeline.pwn";
-
-    // use different email for simulator
-    #if TARGET_IPHONE_SIMULATOR
-        email = @"emulator@timeline.pwn";
-    #endif
-
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *email = [defaults objectForKey:@"email"];
     
     // Post:
     NSString *postString = [NSString stringWithFormat:@"email=%@&timestamp=%i&long=%f&lat=%f", email, abs(currentTimestamp), location.coordinate.longitude, location.coordinate.latitude];

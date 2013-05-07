@@ -19,4 +19,6 @@
 @property (strong, nonatomic) UINavigationController *navigationController;
 @property UIBackgroundTaskIdentifier bgTask;
 
+@property (strong, nonatomic) TLBackgroundPingOperation *backgroundPing;
+
 @end

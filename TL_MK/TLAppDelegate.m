@@ -12,6 +12,7 @@
 @implementation TLAppDelegate
 @synthesize operationQueue;
 @synthesize bgTask;
+@synthesize backgroundPing;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -49,7 +50,7 @@
     
     // Request permission to run in the background. Provide an
     // expiration handler in case the task runs long.
-    NSAssert(bgTask == UIBackgroundTaskInvalid, nil);
+    // NSAssert(bgTask == UIBackgroundTaskInvalid, nil);
     
     bgTask = [app beginBackgroundTaskWithExpirationHandler:^{
         // Synchronize the cleanup call on the main thread in case
@@ -67,16 +68,25 @@
     // Start the long-running task and return immediately.
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
-        
-        while (1) {
-            NSLog(@"BGTime left: %f", [UIApplication sharedApplication].backgroundTimeRemaining);
-            TLBackgroundPingOperation *backgroundPing = [[TLBackgroundPingOperation alloc] init];
+        if(![backgroundPing isKindOfClass:[TLBackgroundPingOperation class]]) {
+            NSLog(@"backgroundPing != nil");
+            backgroundPing = [[TLBackgroundPingOperation alloc] init];
             [self.operationQueue addOperation:backgroundPing];
-            sleep(300);
+            
+            
+            while (1) {
+                // NSLog(@"BGTime left: %f", [UIApplication sharedApplication].backgroundTimeRemaining);
+                [backgroundPing getLocation];
+                
+                NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                NSInteger frequency = [[defaults objectForKey:@"frequency"] integerValue];
+                NSLog(@"sleeping for %i", frequency);
+                sleep(frequency);
+            }
             
         }
         
-        NSLog(@"App staus: applicationDidEnterBackground");
+        // NSLog(@"App staus: applicationDidEnterBackground");
         // Synchronize the cleanup call on the main thread in case
         // the expiration handler is fired at the same time.
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -87,10 +97,7 @@
             }
         });
     });
-    
-    NSLog(@"backgroundTimeRemaining: %.0f", [[UIApplication sharedApplication] backgroundTimeRemaining]);
 
-    
     
 }
 
