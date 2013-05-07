@@ -7,6 +7,7 @@
 //
 
 #import "TLAppDelegate.h"
+#import "TLCoreLocation.h"
 
 @implementation TLAppDelegate
 @synthesize operationQueue;
@@ -18,8 +19,8 @@
     self.operationQueue = [[NSOperationQueue alloc] init];
     
     // Begin the background pinging
-    TLBackgroundPingOperation *backgroundPing = [[TLBackgroundPingOperation alloc] init];
-    [self.operationQueue addOperation:backgroundPing];
+    //TLBackgroundPingOperation *backgroundPing = [[TLBackgroundPingOperation alloc] init];
+    //[self.operationQueue addOperation:backgroundPing];
     
     // Add the main view controller to the view stack
     [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"NavigationBar.png"] forBarMetrics:UIBarMetricsDefault];
@@ -39,6 +40,58 @@
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    
+    
+    NSLog(@"to background");
+    
+    
+    UIApplication *app = [UIApplication sharedApplication];
+    
+    // Request permission to run in the background. Provide an
+    // expiration handler in case the task runs long.
+    NSAssert(bgTask == UIBackgroundTaskInvalid, nil);
+    
+    bgTask = [app beginBackgroundTaskWithExpirationHandler:^{
+        // Synchronize the cleanup call on the main thread in case
+        // the task actually finishes at around the same time.
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            if (bgTask != UIBackgroundTaskInvalid)
+            {
+                [app endBackgroundTask:bgTask];
+                bgTask = UIBackgroundTaskInvalid;
+            }
+        });
+    }];
+    
+    // Start the long-running task and return immediately.
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        
+        while (1) {
+            NSLog(@"BGTime left: %f", [UIApplication sharedApplication].backgroundTimeRemaining);
+            TLBackgroundPingOperation *backgroundPing = [[TLBackgroundPingOperation alloc] init];
+            [self.operationQueue addOperation:backgroundPing];
+            sleep(300);
+            
+        }
+        
+        NSLog(@"App staus: applicationDidEnterBackground");
+        // Synchronize the cleanup call on the main thread in case
+        // the expiration handler is fired at the same time.
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (bgTask != UIBackgroundTaskInvalid)
+            {
+                [app endBackgroundTask:bgTask];
+                bgTask = UIBackgroundTaskInvalid;
+            }
+        });
+    });
+    
+    NSLog(@"backgroundTimeRemaining: %.0f", [[UIApplication sharedApplication] backgroundTimeRemaining]);
+
+    
+    
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application

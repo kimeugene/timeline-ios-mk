@@ -17,6 +17,7 @@
     if(self != nil) {
         self.locMgr = [[CLLocationManager alloc] init];
         self.locMgr.delegate = self;
+        self.locMgr.distanceFilter = 1;
     }
     return self;
 }
