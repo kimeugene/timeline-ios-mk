@@ -10,6 +10,7 @@
 #import <MapKit/MapKit.h>
 #import <CoreLocation/CoreLocation.h>
 #import "TLLocation.h"
+#import "TLSettingsViewController.h"
 
 @interface TLViewController : UIViewController <MKMapViewDelegate>
 
@@ -19,6 +20,7 @@
 
 @property (nonatomic, retain) TLLocation *currentLocation;
 @property (nonatomic, retain) NSArray *timeline;
+@property (nonatomic, retain) TLSettingsViewController *settingsViewController;
 
 
 @end

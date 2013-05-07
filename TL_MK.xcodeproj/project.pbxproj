@@ -42,6 +42,8 @@
 		63E5030817028DA3000142B1 /* TLCoreLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 63E5030617028DA3000142B1 /* TLCoreLocation.m */; };
 		C4832E131726004900973EE3 /* NavigationBar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C4832E111726004900973EE3 /* NavigationBar@2x.png */; };
 		C4832E141726004900973EE3 /* NavigationBar.png in Resources */ = {isa = PBXBuildFile; fileRef = C4832E121726004900973EE3 /* NavigationBar.png */; };
+		C4858F6F17387A1800FCA9A0 /* TLSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C4858F6E17387A1800FCA9A0 /* TLSettingsViewController.m */; };
+		C4858F721738864100FCA9A0 /* TLConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = C4858F711738864100FCA9A0 /* TLConfig.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -102,6 +104,10 @@
 		63E5030617028DA3000142B1 /* TLCoreLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TLCoreLocation.m; path = ../TLCoreLocation.m; sourceTree = "<group>"; };
 		C4832E111726004900973EE3 /* NavigationBar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "NavigationBar@2x.png"; path = "Images/Chrome/NavigationBar@2x.png"; sourceTree = "<group>"; };
 		C4832E121726004900973EE3 /* NavigationBar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = NavigationBar.png; path = Images/Chrome/NavigationBar.png; sourceTree = "<group>"; };
+		C4858F6D17387A1800FCA9A0 /* TLSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLSettingsViewController.h; sourceTree = "<group>"; };
+		C4858F6E17387A1800FCA9A0 /* TLSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TLSettingsViewController.m; sourceTree = "<group>"; };
+		C4858F701738864100FCA9A0 /* TLConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLConfig.h; sourceTree = "<group>"; };
+		C4858F711738864100FCA9A0 /* TLConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TLConfig.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -166,6 +172,8 @@
 				63E502CC16FBC3A9000142B1 /* ASIHTTPRequest */,
 				63E5030317028DA3000142B1 /* TLBackgroundPingOperation.h */,
 				63E5030417028DA3000142B1 /* TLBackgroundPingOperation.m */,
+				C4858F701738864100FCA9A0 /* TLConfig.h */,
+				C4858F711738864100FCA9A0 /* TLConfig.m */,
 				63E5030517028DA3000142B1 /* TLCoreLocation.h */,
 				63E5030617028DA3000142B1 /* TLCoreLocation.m */,
 				63E502B616FBBB0A000142B1 /* TLAppDelegate.h */,
@@ -175,6 +183,8 @@
 				63E502C316FBBB0A000142B1 /* TLViewController.m */,
 				63E502FA1700BF4E000142B1 /* TLLocation.h */,
 				63E502FB1700BF4F000142B1 /* TLLocation.m */,
+				C4858F6D17387A1800FCA9A0 /* TLSettingsViewController.h */,
+				C4858F6E17387A1800FCA9A0 /* TLSettingsViewController.m */,
 				63E502AE16FBBB09000142B1 /* Supporting Files */,
 			);
 			path = TL_MK;
@@ -339,6 +349,8 @@
 				63E502FC1700BF4F000142B1 /* TLLocation.m in Sources */,
 				63E5030717028DA3000142B1 /* TLBackgroundPingOperation.m in Sources */,
 				63E5030817028DA3000142B1 /* TLCoreLocation.m in Sources */,
+				C4858F6F17387A1800FCA9A0 /* TLSettingsViewController.m in Sources */,
+				C4858F721738864100FCA9A0 /* TLConfig.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

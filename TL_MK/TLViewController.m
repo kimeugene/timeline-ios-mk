@@ -10,6 +10,7 @@
 #import "ASIHTTPRequest.h"
 #import "TLLocation.h"
 #import "MBProgressHUD.h"
+#import "TLConfig.h"
 
 #ifdef __APPLE__
 #include "TargetConditionals.h"
@@ -30,9 +31,115 @@
     CGRect frame = self.view.frame;
     frame.origin.y = 0;
     self.mapView = [[MKMapView alloc] initWithFrame:frame];
-    NSLog(@"MKMapView will take the frame: %@", NSStringFromCGRect(frame));
     [self.view addSubview:self.mapView];
-    NSLog(@"yes");
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [self setTitle:@"Back"];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self setTitle:@"Saturday, April 4th"];
+    [self addLeftRightStepButtons];
+    [self addLeftRightDayButtons];
+    [self addSettingsButton];
+
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *email = [defaults objectForKey:@"email"];
+
+    // use different email for simulator
+    #if TARGET_IPHONE_SIMULATOR
+    #else
+    #endif
+
+    NSString *url = [NSString stringWithFormat: @"http://ec2-50-16-36-166.compute-1.amazonaws.com/get/%@/2013-04-29", email];
+
+    ASIHTTPRequest *_request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:url]];
+    __weak ASIHTTPRequest *request = _request;
+    
+    request.requestMethod = @"GET";
+    //[request addRequestHeader:@"Content-Type" value:@"application/json"];
+    //[request appendPostData:[json dataUsingEncoding:NSUTF8StringEncoding]];
+    [request setDelegate:self];
+    [request setCompletionBlock:^{
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        NSString *responseString = [request responseString];
+        [self plotTimeline:request.responseData];
+        NSLog(@"Response: %@", responseString);
+    }];
+    [request setFailedBlock:^{
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        NSError *error = [request error];
+        NSLog(@"Error: %@", error.localizedDescription);
+    }];
+    
+    [request startAsynchronous];
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = @"Loading data...";
+
+}
+
+- (void) addLeftRightStepButtons {
+    
+    // Add the left button
+    UIButton *leftStepButton = [[UIButton alloc] initWithFrame:CGRectMake(100, self.view.frame.size.height - 48, 40, 40)];
+    [leftStepButton setBackgroundColor:[UIColor colorWithRed:35.0/255
+                                                       green:35.0/255
+                                                        blue:35.0/255
+                                                       alpha:0.96] ];
+    [leftStepButton setTitle:@"<" forState:UIControlStateNormal];
+    [leftStepButton addTarget:self action:@selector(leftNav) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:leftStepButton];
+    
+    // Add the right button
+    UIButton *rightStepButton = [[UIButton alloc] initWithFrame:CGRectMake(176, self.view.frame.size.height - 48, 40, 40)];
+    [rightStepButton setBackgroundColor:[UIColor colorWithRed:35.0/255
+                                                        green:35.0/255
+                                                         blue:35.0/255
+                                                        alpha:0.96] ];
+    [rightStepButton setTitle:@">" forState:UIControlStateNormal];
+    [rightStepButton addTarget:self action:@selector(rightNav) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:rightStepButton];
+}
+
+- (void) addLeftRightDayButtons {
+    
+    // Add the left button
+    UIButton *leftDayButton = [[UIButton alloc] initWithFrame:CGRectMake(12, self.view.frame.size.height - 48, 40, 40)];
+    [leftDayButton setBackgroundColor:[UIColor colorWithRed:35.0/255
+                                                       green:35.0/255
+                                                        blue:35.0/255
+                                                       alpha:0.86] ];
+    [leftDayButton setTitle:@"<<" forState:UIControlStateNormal];
+    [leftDayButton addTarget:self action:@selector(leftNav) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:leftDayButton];
+    
+    // Add the right button
+    UIButton *rightDayButton = [[UIButton alloc] initWithFrame:CGRectMake(268, self.view.frame.size.height - 48, 40, 40)];
+    [rightDayButton setBackgroundColor:[UIColor colorWithRed:35.0/255
+                                                        green:35.0/255
+                                                         blue:35.0/255
+                                                        alpha:0.86] ];
+    [rightDayButton setTitle:@">>" forState:UIControlStateNormal];
+    [rightDayButton addTarget:self action:@selector(rightNav) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:rightDayButton];
+}
+
+- (void)addSettingsButton
+{
+    UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithTitle:@"?"
+                                                                      style:UIBarButtonItemStylePlain
+                                                                     target:self
+                                                                     action:@selector(settings)];
+    self.navigationItem.rightBarButtonItem = settingsButton;
+}
+
+- (void)settings
+{
+    self.settingsViewController = [[TLSettingsViewController alloc] init];
+    [self.navigationController pushViewController:self.settingsViewController animated:YES];
 }
 
 - (void)navigateTimeline:(NSString *)direction
@@ -51,7 +158,7 @@
             return;
         }
     }
-
+    
     if ([direction isEqualToString:@"back"])
     {
         new_index = self.currentLocation.index - 1;
@@ -194,63 +301,5 @@
     [location.mapItem openInMapsWithLaunchOptions:launchOptions];
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [self setTitle:@"Saturday, April 4th"];
-    
-    // Add the left button
-    UIButton *leftStepButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 52, 56, 40, 40)];
-    [leftStepButton setBackgroundColor:[UIColor colorWithRed:35.0/255
-                                                       green:35.0/255
-                                                        blue:35.0/255
-                                                       alpha:0.96] ];
-    [leftStepButton addTarget:self action:@selector(leftNav) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:leftStepButton];
-    
-    // Add the right button
-    UIButton *rightStepButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 52, 108, 40, 40)];
-    [rightStepButton setBackgroundColor:[UIColor colorWithRed:35.0/255
-                                                        green:35.0/255
-                                                         blue:35.0/255
-                                                        alpha:0.96] ];
-    [rightStepButton addTarget:self action:@selector(rightNav) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:rightStepButton];
-
-    NSString *email = @"fitz5@timeline.pwn";
-
-    // use different email for simulator
-    #if TARGET_IPHONE_SIMULATOR
-        email = @"emulator@timeline.pwn";
-        NSLog(@"Simulator");
-    #else
-        NSLog(@"Not Simulator");
-    #endif
-
-    NSString *url = [NSString stringWithFormat: @"http://ec2-50-16-36-166.compute-1.amazonaws.com/get/%@/2013-04-29", email];
-
-    ASIHTTPRequest *_request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:url]];
-    __weak ASIHTTPRequest *request = _request;
-    
-    request.requestMethod = @"GET";
-    //[request addRequestHeader:@"Content-Type" value:@"application/json"];
-    //[request appendPostData:[json dataUsingEncoding:NSUTF8StringEncoding]];
-    [request setDelegate:self];
-    [request setCompletionBlock:^{
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
-        NSString *responseString = [request responseString];
-        [self plotTimeline:request.responseData];
-        NSLog(@"Response: %@", responseString);
-    }];
-    [request setFailedBlock:^{
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
-        NSError *error = [request error];
-        NSLog(@"Error: %@", error.localizedDescription);
-    }];
-    
-    [request startAsynchronous];
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    hud.labelText = @"Loading data...";
-
-}
 
 @end
