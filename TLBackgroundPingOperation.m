@@ -22,26 +22,19 @@
     coreLocation.delegate = self;
     
     // Set a timer that executes every 5 minutes
-    [NSTimer scheduledTimerWithTimeInterval:5
-                                     target:self
-                                   selector:@selector(getSingleLocation)
-                                   userInfo:nil
-                                    repeats:YES];
+    //[NSTimer scheduledTimerWithTimeInterval:5
+    //                                 target:self
+     ///                              selector:@selector(getSingleLocation)
+        //                           userInfo:nil
+          //                          repeats:YES];
     
     // Fire off the first one
-    [self getSingleLocation];
-    [coreLocation.locMgr startMonitoringSignificantLocationChanges];
+    [coreLocation.locMgr startUpdatingLocation];
 
     // Start the run loop so this operation stays active
     NSLog(@"TBackgroundPingOperation: main() executed");
     NSRunLoop* runLoop = [NSRunLoop currentRunLoop];
     [runLoop run];
-}
-
-- (void)getSingleLocation
-{
-    NSLog(@"getsingleLocation");
-    //[coreLocation.locMgr startUpdatingLocation];
 }
 
 - (void)locationUpdate:(CLLocation *)location {    
@@ -76,9 +69,8 @@
                                          startImmediately:YES];
     requestNumber++;
     
-    
-    [coreLocation.locMgr startMonitoringSignificantLocationChanges]; // We may be able to remove this
     [coreLocation.locMgr stopUpdatingLocation];
+
 }
 
 - (void)locationError:(NSError *)error {
