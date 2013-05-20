@@ -22,6 +22,7 @@
 
 @implementation TLViewController
 @synthesize currentLocation;
+@synthesize currentDate;
 
 - (void)viewDidLoad
 {
@@ -32,6 +33,7 @@
     frame.origin.y = 0;
     self.mapView = [[MKMapView alloc] initWithFrame:frame];
     [self.view addSubview:self.mapView];
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -41,20 +43,21 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [self setTitle:@"Saturday, April 4th"];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *email = [defaults objectForKey:@"email"];
+    NSString *date = [defaults objectForKey:@"date"];
+    
+    [self setTitle:date];
     [self addLeftRightStepButtons];
     [self addLeftRightDayButtons];
     [self addSettingsButton];
-
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *email = [defaults objectForKey:@"email"];
 
     // use different email for simulator
     #if TARGET_IPHONE_SIMULATOR
     #else
     #endif
-
-    NSString *url = [NSString stringWithFormat: @"http://ec2-50-16-36-166.compute-1.amazonaws.com/get/%@/2013-04-29", email];
+    
+    NSString *url = [NSString stringWithFormat: @"http://ec2-50-16-36-166.compute-1.amazonaws.com/get/%@/%@/150", email, date];
 
     ASIHTTPRequest *_request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:url]];
     __weak ASIHTTPRequest *request = _request;
@@ -63,6 +66,7 @@
     //[request addRequestHeader:@"Content-Type" value:@"application/json"];
     //[request appendPostData:[json dataUsingEncoding:NSUTF8StringEncoding]];
     [request setDelegate:self];
+    NSLog(@"Grabbing data points from %@", url);
     [request setCompletionBlock:^{
         [MBProgressHUD hideHUDForView:self.view animated:YES];
         NSString *responseString = [request responseString];

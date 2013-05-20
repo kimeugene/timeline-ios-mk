@@ -22,5 +22,6 @@
 @property (nonatomic, retain) NSArray *timeline;
 @property (nonatomic, retain) TLSettingsViewController *settingsViewController;
 
+@property (nonatomic, retain) NSString *currentDate;
 
 @end
