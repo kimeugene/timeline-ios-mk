@@ -156,7 +156,7 @@
                                                         blue:35.0/255
                                                        alpha:0.96] ];
     [leftStepButton setTitle:@"<" forState:UIControlStateNormal];
-    [leftStepButton addTarget:self action:@selector(leftNav) forControlEvents:UIControlEventTouchUpInside];
+    [leftStepButton addTarget:self action:@selector(previousStep) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:leftStepButton];
     
     // Add the right button
@@ -166,7 +166,7 @@
                                                          blue:35.0/255
                                                         alpha:0.96] ];
     [rightStepButton setTitle:@">" forState:UIControlStateNormal];
-    [rightStepButton addTarget:self action:@selector(rightNav) forControlEvents:UIControlEventTouchUpInside];
+    [rightStepButton addTarget:self action:@selector(nextStep) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:rightStepButton];
 }
 
@@ -179,7 +179,7 @@
                                                         blue:35.0/255
                                                        alpha:0.86] ];
     [leftDayButton setTitle:@"<<" forState:UIControlStateNormal];
-    [leftDayButton addTarget:self action:@selector(leftNav) forControlEvents:UIControlEventTouchUpInside];
+    [leftDayButton addTarget:self action:@selector(previousDay) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:leftDayButton];
     
     // Add the right button
@@ -189,26 +189,56 @@
                                                          blue:35.0/255
                                                         alpha:0.86] ];
     [rightDayButton setTitle:@">>" forState:UIControlStateNormal];
-    [rightDayButton addTarget:self action:@selector(rightNav) forControlEvents:UIControlEventTouchUpInside];
+    [rightDayButton addTarget:self action:@selector(nextDay) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:rightDayButton];
 }
 
-- (void)addSettingsButton
+- (void)previousStep
 {
-    UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithTitle:@"?"
-                                                                      style:UIBarButtonItemStylePlain
-                                                                     target:self
-                                                                     action:@selector(settings)];
-    self.navigationItem.rightBarButtonItem = settingsButton;
+    [self navigateTimelineByStep:@"back"];
 }
 
-- (void)settings
+- (void)nextStep
 {
-    self.settingsViewController = [[TLSettingsViewController alloc] init];
-    [self.navigationController pushViewController:self.settingsViewController animated:YES];
+    [self navigateTimelineByStep:@"forward"];
 }
 
-- (void)navigateTimeline:(NSString *)direction
+- (void)previousDay
+{
+    [self navigateTimelineByDay:@"back"];
+}
+
+- (void)nextDay
+{
+    [self navigateTimelineByDay:@"forward"];
+}
+
+- (void)navigateTimelineByDay:(NSString *)measure
+{
+    // Read currently selected date
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *dateString = [defaults objectForKey:@"date"];
+    
+    NSDateFormatter *format = [[NSDateFormatter alloc] init];
+    [format setDateFormat:@"yyyy-MM-dd"];
+    NSDate *date = [format dateFromString:dateString];
+    NSDate *yesterday;
+    if([measure isEqualToString:@"back"])
+        yesterday = [date dateByAddingTimeInterval:(60*60*24*1)*-1];
+    else if([measure isEqualToString:@"forward"])
+        yesterday = [date dateByAddingTimeInterval:60*60*24*1];
+    
+    // Write date
+    NSString *newDate = [format stringFromDate:yesterday];
+    [defaults setObject:newDate forKey:@"date"];
+    [defaults synchronize];
+    
+    // Fetch the new lcoation data
+    [self fetchLocationData];
+
+}
+
+- (void)navigateTimelineByStep:(NSString *)direction
 {
     NSInteger cnt = self.timeline.count;
     
@@ -257,14 +287,19 @@
     }
 }
 
-- (void)leftNav
+- (void)addSettingsButton
 {
-    [self navigateTimeline:@"back"];
+    UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithTitle:@"?"
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self
+                                                                      action:@selector(settings)];
+    self.navigationItem.rightBarButtonItem = settingsButton;
 }
 
-- (void)rightNav
+- (void)settings
 {
-    [self navigateTimeline:@"forward"];
+    self.settingsViewController = [[TLSettingsViewController alloc] init];
+    [self.navigationController pushViewController:self.settingsViewController animated:YES];
 }
 
 - (void)didReceiveMemoryWarning
