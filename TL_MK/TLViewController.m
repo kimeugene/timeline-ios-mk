@@ -12,6 +12,7 @@
 #import "MBProgressHUD.h"
 #import "TLConfig.h"
 #import "TSQCalendarView.h"
+#import "TSQTACalendarRowCell.h"
 
 #ifdef __APPLE__
 #include "TargetConditionals.h"
@@ -38,7 +39,7 @@
     [self.view addSubview:self.mapView];
     
     // Initialize the calendar view container
-    CGRect calendarContainerFrame = CGRectMake(30, 80, 260, 300);
+    CGRect calendarContainerFrame = CGRectMake(30, 80, 260, 296);
     calendarViewContainerShown = 0;
     self.calendarViewContainer = [[UIScrollView alloc] initWithFrame:calendarContainerFrame];
     [self.calendarViewContainer setBackgroundColor:[UIColor grayColor]];
@@ -50,6 +51,7 @@
     calendarFrame.size.width -= 2;
     calendarFrame.size.height -= 2;
     TSQCalendarView *calendarView = [[TSQCalendarView alloc] initWithFrame:calendarFrame];
+    calendarView.rowCellClass = [TSQTACalendarRowCell class];
     calendarView.firstDate = [[NSDate date] dateByAddingTimeInterval:-(60*60*24*14)];
     calendarView.lastDate = [[NSDate date] dateByAddingTimeInterval:60 * 60 * 24 * 279.5]; // approximately 279.5 days in the future
     calendarView.backgroundColor = [UIColor colorWithRed:0.84f green:0.85f blue:0.86f alpha:1.0f];
