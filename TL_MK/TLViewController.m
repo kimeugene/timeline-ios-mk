@@ -100,8 +100,18 @@
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *email = [defaults objectForKey:@"email"];
-    NSString *date = [defaults objectForKey:@"date"];       
-    [self setTitle:date];
+    NSString *date = [defaults objectForKey:@"date"];
+
+    // Load the currently selected date from settings
+    NSDateFormatter *formatEncoded = [[NSDateFormatter alloc] init];
+    [formatEncoded setDateFormat:@"yyyy-MM-dd"];
+    NSDate *dateFormatted = [formatEncoded dateFromString:date];
+    
+    // Format the currently selected date for the navigation bar
+    NSDateFormatter *formatDisplay = [[NSDateFormatter alloc] init];
+    [formatDisplay setDateFormat:@"MMMM d, yyyy"];
+    NSString *dateFormattedString = [formatDisplay stringFromDate:dateFormatted];
+    [self setTitle:dateFormattedString];
     
     NSLog(@"fetchLocationData settingTitle to %@", date);
 
