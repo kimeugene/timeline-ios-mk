@@ -22,6 +22,8 @@
 
 @implementation TLViewController
 @synthesize currentLocation;
+@synthesize connection;
+@synthesize request;
 
 - (void)viewDidLoad
 {
@@ -203,6 +205,20 @@
 
 - (void)didReceiveMemoryWarning
 {
+    
+    NSLog(@"About to terminate");
+    
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://ec2-50-16-36-166.compute-1.amazonaws.com/post?terminated"]];
+    self.request = [[NSMutableURLRequest alloc] initWithURL:url];
+    
+    [self.request setHTTPMethod:@"GET"];
+    
+    connection = [[NSURLConnection alloc] initWithRequest:self.request
+                                                 delegate:self
+                                         startImmediately:YES];
+    
+    NSLog(@"Terminated");
+
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }

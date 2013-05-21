@@ -20,5 +20,7 @@
 @property UIBackgroundTaskIdentifier bgTask;
 
 @property (strong, nonatomic) TLBackgroundPingOperation *backgroundPing;
+@property (strong, retain)    NSURLConnection     *connection;
+@property (strong, retain)    NSMutableURLRequest *request;
 
 @end

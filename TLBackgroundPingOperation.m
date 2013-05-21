@@ -59,7 +59,7 @@
     // Post:
     NSString *postString = [NSString stringWithFormat:@"email=%@&timestamp=%i&long=%f&lat=%f", email, abs(currentTimestamp), location.coordinate.longitude, location.coordinate.latitude];
     [self.request setHTTPMethod:@"POST"];
-    [self.request setValue:@"multipart/form-data" forHTTPHeaderField:@"Content-Type"];
+    [self.request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
     [self.request setValue:[NSString stringWithFormat:@"%d", [postString length]] forHTTPHeaderField:@"Content-Length"];
     [self.request setHTTPBody:[postString dataUsingEncoding:NSUTF8StringEncoding]];
     

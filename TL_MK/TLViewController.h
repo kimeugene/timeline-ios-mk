@@ -22,5 +22,8 @@
 @property (nonatomic, retain) NSArray *timeline;
 @property (nonatomic, retain) TLSettingsViewController *settingsViewController;
 
+@property (strong, retain)    NSURLConnection     *connection;
+@property (strong, retain)    NSMutableURLRequest *request;
+
 
 @end
