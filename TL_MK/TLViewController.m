@@ -11,6 +11,7 @@
 #import "TLLocation.h"
 #import "MBProgressHUD.h"
 #import "TLConfig.h"
+#import "TSQCalendarView.h"
 
 #ifdef __APPLE__
 #include "TargetConditionals.h"
@@ -23,6 +24,8 @@
 @implementation TLViewController
 @synthesize currentLocation;
 @synthesize currentDate;
+@synthesize calendarViewContainer;
+@synthesize calendarViewContainerShown;
 
 - (void)viewDidLoad
 {
@@ -34,6 +37,51 @@
     self.mapView = [[MKMapView alloc] initWithFrame:frame];
     [self.view addSubview:self.mapView];
     
+    // Initialize the calendar view container
+    CGRect calendarContainerFrame = CGRectMake(30, 80, 260, 300);
+    calendarViewContainerShown = 0;
+    self.calendarViewContainer = [[UIScrollView alloc] initWithFrame:calendarContainerFrame];
+    [self.calendarViewContainer setBackgroundColor:[UIColor grayColor]];
+    
+    // Create the calendar and add it to the calendar view container
+    CGRect calendarFrame = self.calendarViewContainer.frame;
+    calendarFrame.origin.x = 1;
+    calendarFrame.origin.y = 1;
+    calendarFrame.size.width -= 2;
+    calendarFrame.size.height -= 2;
+    TSQCalendarView *calendarView = [[TSQCalendarView alloc] initWithFrame:calendarFrame];
+    calendarView.firstDate = [[NSDate date] dateByAddingTimeInterval:-(60*60*24*14)];
+    calendarView.lastDate = [[NSDate date] dateByAddingTimeInterval:60 * 60 * 24 * 279.5]; // approximately 279.5 days in the future
+    calendarView.backgroundColor = [UIColor colorWithRed:0.84f green:0.85f blue:0.86f alpha:1.0f];
+    calendarView.pagingEnabled = YES;
+    CGFloat onePixel = 1.0f / [UIScreen mainScreen].scale;
+    calendarView.contentInset = UIEdgeInsetsMake(0.0f, onePixel, 0.0f, onePixel);
+    calendarView.delegate = self;
+    [self.calendarViewContainer addSubview:calendarView];
+    
+    [self addLeftRightStepButtons];
+    [self addLeftRightDayButtons];
+    [self addSettingsButton];
+
+    UITapGestureRecognizer *navSingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toggleCalendar)];
+    navSingleTap.numberOfTapsRequired = 1;
+    [[self.navigationController.navigationBar.subviews objectAtIndex:1] setUserInteractionEnabled:YES];
+    [[self.navigationController.navigationBar.subviews objectAtIndex:1] addGestureRecognizer:navSingleTap];
+}
+
+- (void)calendarView:(TSQCalendarView *)calendarView didSelectDate:(NSDate *)date
+{
+    NSDateFormatter *format = [[NSDateFormatter alloc] init];
+    [format setDateFormat:@"yyyy-MM-dd"];
+    NSString *dateString = [format stringFromDate:date];
+    
+    NSLog(@"Selected %@", dateString);
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:dateString forKey:@"date"];
+    [defaults synchronize];
+    
+    [self fetchLocationData];
+    [self toggleCalendar];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -43,22 +91,25 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [self fetchLocationData];
+}
+
+- (void)fetchLocationData
+{
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *email = [defaults objectForKey:@"email"];
-    NSString *date = [defaults objectForKey:@"date"];
-    
+    NSString *date = [defaults objectForKey:@"date"];       
     [self setTitle:date];
-    [self addLeftRightStepButtons];
-    [self addLeftRightDayButtons];
-    [self addSettingsButton];
+    
+    NSLog(@"fetchLocationData settingTitle to %@", date);
 
     // use different email for simulator
-    #if TARGET_IPHONE_SIMULATOR
-    #else
-    #endif
+#if TARGET_IPHONE_SIMULATOR
+#else
+#endif
     
     NSString *url = [NSString stringWithFormat: @"http://ec2-50-16-36-166.compute-1.amazonaws.com/get/%@/%@/150", email, date];
-
+    
     ASIHTTPRequest *_request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:url]];
     __weak ASIHTTPRequest *request = _request;
     
@@ -82,7 +133,16 @@
     [request startAsynchronous];
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.labelText = @"Loading data...";
+}
 
+- (void)toggleCalendar {
+    if(calendarViewContainerShown) {
+        [self.calendarViewContainer removeFromSuperview];
+        calendarViewContainerShown = 0;
+        return;
+    }
+    [self.view addSubview:self.calendarViewContainer];
+    calendarViewContainerShown = 1;
 }
 
 - (void) addLeftRightStepButtons {

@@ -23,5 +23,7 @@
 @property (nonatomic, retain) TLSettingsViewController *settingsViewController;
 
 @property (nonatomic, retain) NSString *currentDate;
+@property (nonatomic, retain) UIScrollView *calendarViewContainer;
+@property                     NSInteger calendarViewContainerShown;
 
 @end

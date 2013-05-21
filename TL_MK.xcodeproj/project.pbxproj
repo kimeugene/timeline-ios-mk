@@ -44,6 +44,10 @@
 		C4832E141726004900973EE3 /* NavigationBar.png in Resources */ = {isa = PBXBuildFile; fileRef = C4832E121726004900973EE3 /* NavigationBar.png */; };
 		C4858F6F17387A1800FCA9A0 /* TLSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C4858F6E17387A1800FCA9A0 /* TLSettingsViewController.m */; };
 		C4858F721738864100FCA9A0 /* TLConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = C4858F711738864100FCA9A0 /* TLConfig.m */; };
+		C4E49259174AE70400A1478B /* TSQCalendarCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C4E49252174AE70400A1478B /* TSQCalendarCell.m */; };
+		C4E4925A174AE70400A1478B /* TSQCalendarMonthHeaderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C4E49254174AE70400A1478B /* TSQCalendarMonthHeaderCell.m */; };
+		C4E4925B174AE70400A1478B /* TSQCalendarRowCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C4E49256174AE70400A1478B /* TSQCalendarRowCell.m */; };
+		C4E4925C174AE70400A1478B /* TSQCalendarView.m in Sources */ = {isa = PBXBuildFile; fileRef = C4E49258174AE70400A1478B /* TSQCalendarView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -108,6 +112,16 @@
 		C4858F6E17387A1800FCA9A0 /* TLSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TLSettingsViewController.m; sourceTree = "<group>"; };
 		C4858F701738864100FCA9A0 /* TLConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLConfig.h; sourceTree = "<group>"; };
 		C4858F711738864100FCA9A0 /* TLConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TLConfig.m; sourceTree = "<group>"; };
+		C4E4924F174AE70400A1478B /* TimesSquare-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TimesSquare-Prefix.pch"; sourceTree = "<group>"; };
+		C4E49250174AE70400A1478B /* TimesSquare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimesSquare.h; sourceTree = "<group>"; };
+		C4E49251174AE70400A1478B /* TSQCalendarCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSQCalendarCell.h; sourceTree = "<group>"; };
+		C4E49252174AE70400A1478B /* TSQCalendarCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSQCalendarCell.m; sourceTree = "<group>"; };
+		C4E49253174AE70400A1478B /* TSQCalendarMonthHeaderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSQCalendarMonthHeaderCell.h; sourceTree = "<group>"; };
+		C4E49254174AE70400A1478B /* TSQCalendarMonthHeaderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSQCalendarMonthHeaderCell.m; sourceTree = "<group>"; };
+		C4E49255174AE70400A1478B /* TSQCalendarRowCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSQCalendarRowCell.h; sourceTree = "<group>"; };
+		C4E49256174AE70400A1478B /* TSQCalendarRowCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSQCalendarRowCell.m; sourceTree = "<group>"; };
+		C4E49257174AE70400A1478B /* TSQCalendarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSQCalendarView.h; sourceTree = "<group>"; };
+		C4E49258174AE70400A1478B /* TSQCalendarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSQCalendarView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,6 +182,7 @@
 		63E502AD16FBBB09000142B1 /* TL_MK */ = {
 			isa = PBXGroup;
 			children = (
+				C4E4924E174AE70400A1478B /* TimesSquare */,
 				63E502E916FBD048000142B1 /* MBProgressHUD */,
 				63E502CC16FBC3A9000142B1 /* ASIHTTPRequest */,
 				63E5030317028DA3000142B1 /* TLBackgroundPingOperation.h */,
@@ -262,6 +277,23 @@
 			name = Chrome;
 			sourceTree = "<group>";
 		};
+		C4E4924E174AE70400A1478B /* TimesSquare */ = {
+			isa = PBXGroup;
+			children = (
+				C4E4924F174AE70400A1478B /* TimesSquare-Prefix.pch */,
+				C4E49250174AE70400A1478B /* TimesSquare.h */,
+				C4E49251174AE70400A1478B /* TSQCalendarCell.h */,
+				C4E49252174AE70400A1478B /* TSQCalendarCell.m */,
+				C4E49253174AE70400A1478B /* TSQCalendarMonthHeaderCell.h */,
+				C4E49254174AE70400A1478B /* TSQCalendarMonthHeaderCell.m */,
+				C4E49255174AE70400A1478B /* TSQCalendarRowCell.h */,
+				C4E49256174AE70400A1478B /* TSQCalendarRowCell.m */,
+				C4E49257174AE70400A1478B /* TSQCalendarView.h */,
+				C4E49258174AE70400A1478B /* TSQCalendarView.m */,
+			);
+			path = TimesSquare;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -351,6 +383,10 @@
 				63E5030817028DA3000142B1 /* TLCoreLocation.m in Sources */,
 				C4858F6F17387A1800FCA9A0 /* TLSettingsViewController.m in Sources */,
 				C4858F721738864100FCA9A0 /* TLConfig.m in Sources */,
+				C4E49259174AE70400A1478B /* TSQCalendarCell.m in Sources */,
+				C4E4925A174AE70400A1478B /* TSQCalendarMonthHeaderCell.m in Sources */,
+				C4E4925B174AE70400A1478B /* TSQCalendarRowCell.m in Sources */,
+				C4E4925C174AE70400A1478B /* TSQCalendarView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
