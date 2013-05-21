@@ -11,6 +11,8 @@
 #import "TLLocation.h"
 #import "MBProgressHUD.h"
 #import "TLConfig.h"
+#import "TSQCalendarView.h"
+#import "TSQTACalendarRowCell.h"
 
 #ifdef __APPLE__
 #include "TargetConditionals.h"
@@ -24,6 +26,9 @@
 @synthesize currentLocation;
 @synthesize connection;
 @synthesize request;
+@synthesize currentDate;
+@synthesize calendarViewContainer;
+@synthesize calendarViewContainerShown;
 
 - (void)viewDidLoad
 {
@@ -34,6 +39,53 @@
     frame.origin.y = 0;
     self.mapView = [[MKMapView alloc] initWithFrame:frame];
     [self.view addSubview:self.mapView];
+    
+    // Initialize the calendar view container
+    CGRect calendarContainerFrame = CGRectMake(30, 80, 260, 296);
+    calendarViewContainerShown = 0;
+    self.calendarViewContainer = [[UIScrollView alloc] initWithFrame:calendarContainerFrame];
+    [self.calendarViewContainer setBackgroundColor:[UIColor grayColor]];
+    
+    // Create the calendar and add it to the calendar view container
+    CGRect calendarFrame = self.calendarViewContainer.frame;
+    calendarFrame.origin.x = 1;
+    calendarFrame.origin.y = 1;
+    calendarFrame.size.width -= 2;
+    calendarFrame.size.height -= 2;
+    TSQCalendarView *calendarView = [[TSQCalendarView alloc] initWithFrame:calendarFrame];
+    calendarView.rowCellClass = [TSQTACalendarRowCell class];
+    calendarView.firstDate = [[NSDate date] dateByAddingTimeInterval:-(60*60*24*14)];
+    calendarView.lastDate = [[NSDate date] dateByAddingTimeInterval:60 * 60 * 24 * 279.5]; // approximately 279.5 days in the future
+    calendarView.backgroundColor = [UIColor colorWithRed:0.84f green:0.85f blue:0.86f alpha:1.0f];
+    calendarView.pagingEnabled = YES;
+    CGFloat onePixel = 1.0f / [UIScreen mainScreen].scale;
+    calendarView.contentInset = UIEdgeInsetsMake(0.0f, onePixel, 0.0f, onePixel);
+    calendarView.delegate = self;
+    [self.calendarViewContainer addSubview:calendarView];
+    
+    [self addLeftRightStepButtons];
+    [self addLeftRightDayButtons];
+    [self addSettingsButton];
+
+    UITapGestureRecognizer *navSingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toggleCalendar)];
+    navSingleTap.numberOfTapsRequired = 1;
+    [[self.navigationController.navigationBar.subviews objectAtIndex:1] setUserInteractionEnabled:YES];
+    [[self.navigationController.navigationBar.subviews objectAtIndex:1] addGestureRecognizer:navSingleTap];
+}
+
+- (void)calendarView:(TSQCalendarView *)calendarView didSelectDate:(NSDate *)date
+{
+    NSDateFormatter *format = [[NSDateFormatter alloc] init];
+    [format setDateFormat:@"yyyy-MM-dd"];
+    NSString *dateString = [format stringFromDate:date];
+    
+    NSLog(@"Selected %@", dateString);
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:dateString forKey:@"date"];
+    [defaults synchronize];
+    
+    [self fetchLocationData];
+    [self toggleCalendar];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -43,21 +95,35 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [self setTitle:@"Saturday, April 4th"];
-    [self addLeftRightStepButtons];
-    [self addLeftRightDayButtons];
-    [self addSettingsButton];
+    [self fetchLocationData];
+}
 
+- (void)fetchLocationData
+{
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *email = [defaults objectForKey:@"email"];
+    NSString *date = [defaults objectForKey:@"date"];
+
+    // Load the currently selected date from settings
+    NSDateFormatter *formatEncoded = [[NSDateFormatter alloc] init];
+    [formatEncoded setDateFormat:@"yyyy-MM-dd"];
+    NSDate *dateFormatted = [formatEncoded dateFromString:date];
+    
+    // Format the currently selected date for the navigation bar
+    NSDateFormatter *formatDisplay = [[NSDateFormatter alloc] init];
+    [formatDisplay setDateFormat:@"MMMM d, yyyy"];
+    NSString *dateFormattedString = [formatDisplay stringFromDate:dateFormatted];
+    [self setTitle:dateFormattedString];
+    
+    NSLog(@"fetchLocationData settingTitle to %@", date);
 
     // use different email for simulator
-    #if TARGET_IPHONE_SIMULATOR
-    #else
-    #endif
-
-    NSString *url = [NSString stringWithFormat: @"http://ec2-50-16-36-166.compute-1.amazonaws.com/get/%@/2013-04-29", email];
-
+#if TARGET_IPHONE_SIMULATOR
+#else
+#endif
+    
+    NSString *url = [NSString stringWithFormat: @"http://ec2-50-16-36-166.compute-1.amazonaws.com/get/%@/%@/150", email, date];
+    
     ASIHTTPRequest *_request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:url]];
     __weak ASIHTTPRequest *request = _request;
     
@@ -65,6 +131,7 @@
     //[request addRequestHeader:@"Content-Type" value:@"application/json"];
     //[request appendPostData:[json dataUsingEncoding:NSUTF8StringEncoding]];
     [request setDelegate:self];
+    NSLog(@"Grabbing data points from %@", url);
     [request setCompletionBlock:^{
         [MBProgressHUD hideHUDForView:self.view animated:YES];
         NSString *responseString = [request responseString];
@@ -80,7 +147,16 @@
     [request startAsynchronous];
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.labelText = @"Loading data...";
+}
 
+- (void)toggleCalendar {
+    if(calendarViewContainerShown) {
+        [self.calendarViewContainer removeFromSuperview];
+        calendarViewContainerShown = 0;
+        return;
+    }
+    [self.view addSubview:self.calendarViewContainer];
+    calendarViewContainerShown = 1;
 }
 
 - (void) addLeftRightStepButtons {
@@ -92,7 +168,7 @@
                                                         blue:35.0/255
                                                        alpha:0.96] ];
     [leftStepButton setTitle:@"<" forState:UIControlStateNormal];
-    [leftStepButton addTarget:self action:@selector(leftNav) forControlEvents:UIControlEventTouchUpInside];
+    [leftStepButton addTarget:self action:@selector(previousStep) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:leftStepButton];
     
     // Add the right button
@@ -102,7 +178,7 @@
                                                          blue:35.0/255
                                                         alpha:0.96] ];
     [rightStepButton setTitle:@">" forState:UIControlStateNormal];
-    [rightStepButton addTarget:self action:@selector(rightNav) forControlEvents:UIControlEventTouchUpInside];
+    [rightStepButton addTarget:self action:@selector(nextStep) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:rightStepButton];
 }
 
@@ -115,7 +191,7 @@
                                                         blue:35.0/255
                                                        alpha:0.86] ];
     [leftDayButton setTitle:@"<<" forState:UIControlStateNormal];
-    [leftDayButton addTarget:self action:@selector(leftNav) forControlEvents:UIControlEventTouchUpInside];
+    [leftDayButton addTarget:self action:@selector(previousDay) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:leftDayButton];
     
     // Add the right button
@@ -125,26 +201,56 @@
                                                          blue:35.0/255
                                                         alpha:0.86] ];
     [rightDayButton setTitle:@">>" forState:UIControlStateNormal];
-    [rightDayButton addTarget:self action:@selector(rightNav) forControlEvents:UIControlEventTouchUpInside];
+    [rightDayButton addTarget:self action:@selector(nextDay) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:rightDayButton];
 }
 
-- (void)addSettingsButton
+- (void)previousStep
 {
-    UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithTitle:@"?"
-                                                                      style:UIBarButtonItemStylePlain
-                                                                     target:self
-                                                                     action:@selector(settings)];
-    self.navigationItem.rightBarButtonItem = settingsButton;
+    [self navigateTimelineByStep:@"back"];
 }
 
-- (void)settings
+- (void)nextStep
 {
-    self.settingsViewController = [[TLSettingsViewController alloc] init];
-    [self.navigationController pushViewController:self.settingsViewController animated:YES];
+    [self navigateTimelineByStep:@"forward"];
 }
 
-- (void)navigateTimeline:(NSString *)direction
+- (void)previousDay
+{
+    [self navigateTimelineByDay:@"back"];
+}
+
+- (void)nextDay
+{
+    [self navigateTimelineByDay:@"forward"];
+}
+
+- (void)navigateTimelineByDay:(NSString *)measure
+{
+    // Read currently selected date
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *dateString = [defaults objectForKey:@"date"];
+    
+    NSDateFormatter *format = [[NSDateFormatter alloc] init];
+    [format setDateFormat:@"yyyy-MM-dd"];
+    NSDate *date = [format dateFromString:dateString];
+    NSDate *yesterday;
+    if([measure isEqualToString:@"back"])
+        yesterday = [date dateByAddingTimeInterval:(60*60*24*1)*-1];
+    else if([measure isEqualToString:@"forward"])
+        yesterday = [date dateByAddingTimeInterval:60*60*24*1];
+    
+    // Write date
+    NSString *newDate = [format stringFromDate:yesterday];
+    [defaults setObject:newDate forKey:@"date"];
+    [defaults synchronize];
+    
+    // Fetch the new lcoation data
+    [self fetchLocationData];
+
+}
+
+- (void)navigateTimelineByStep:(NSString *)direction
 {
     NSInteger cnt = self.timeline.count;
     
@@ -193,20 +299,25 @@
     }
 }
 
-- (void)leftNav
+- (void)addSettingsButton
 {
-    [self navigateTimeline:@"back"];
+    UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithTitle:@"?"
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self
+                                                                      action:@selector(settings)];
+    self.navigationItem.rightBarButtonItem = settingsButton;
 }
 
-- (void)rightNav
+- (void)settings
 {
-    [self navigateTimeline:@"forward"];
+    self.settingsViewController = [[TLSettingsViewController alloc] init];
+    [self.navigationController pushViewController:self.settingsViewController animated:YES];
 }
 
 - (void)didReceiveMemoryWarning
 {
     
-    NSLog(@"About to terminate");
+    NSLog(@"Got memory warning");
     
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://ec2-50-16-36-166.compute-1.amazonaws.com/post?terminated"]];
     self.request = [[NSMutableURLRequest alloc] initWithURL:url];
@@ -217,8 +328,6 @@
                                                  delegate:self
                                          startImmediately:YES];
     
-    NSLog(@"Terminated");
-
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }

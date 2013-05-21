@@ -7,17 +7,20 @@
 //
 
 #import "TLSettingsViewController.h"
+#import "TSQCalendarView.h"
 
 @interface TLSettingsViewController ()
 
 @property (nonatomic, strong) UITextField *emailField;
 @property (nonatomic, strong) UITextField *frequencyField;
+@property (nonatomic, strong) UITextField *dateField;
 
 @end
 
 @implementation TLSettingsViewController
 @synthesize emailField;
 @synthesize frequencyField;
+@synthesize dateField;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -33,8 +36,10 @@
     NSLog(@"hideKeyboard");
     [emailField resignFirstResponder];
     [frequencyField resignFirstResponder];
+    [dateField resignFirstResponder];
     
 }
+
 
 - (void)viewDidLoad
 {
@@ -62,45 +67,63 @@
     
     
     // Add the Email label
-    UILabel *emailLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, yCurrent, 296, 24)];
+    UILabel *emailLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, yCurrent, 120, 24)];
     [emailLabel setBackgroundColor:[UIColor whiteColor]];
     [emailLabel setTextColor:[UIColor grayColor]];
     [emailLabel setText:@"USER EMAIL:"];
     [emailLabel setFont:font];
     [self.view addSubview:emailLabel];
-    yCurrent += 24;
+    yCurrent += 16;
     yCurrent += 6;
     
     // Add the Email text input
-    self.emailField = [[UITextField alloc] initWithFrame:CGRectMake(12, yCurrent, 296, 32)];
+    self.emailField = [[UITextField alloc] initWithFrame:CGRectMake(12, yCurrent, 200, 32)];
     [emailField setBackgroundColor:[UIColor whiteColor]];
-    [emailField setBorderStyle:UITextBorderStyleLine];
     [emailField setTextColor:[UIColor blackColor]];
     [emailField setText:@""];
     [emailField setFont:inputFont];
     [self.view addSubview:emailField];
-    yCurrent += 32;
+    yCurrent += 24;
     yCurrent += 12;
     
     // Add the Frequency label
-    UILabel *frequencyLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, yCurrent, 296, 24)];
+    UILabel *frequencyLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, yCurrent, 120, 24)];
     [frequencyLabel setBackgroundColor:[UIColor whiteColor]];
     [frequencyLabel setTextColor:[UIColor grayColor]];
-    [frequencyLabel setText:@"FREQUENCY (MIN):"];
+    [frequencyLabel setText:@"FREQUENCY (SEC):"];
     [frequencyLabel setFont:font];
     [self.view addSubview:frequencyLabel];
-    yCurrent += 24;
+    yCurrent += 16;
     yCurrent += 6;
     
     // Add the Frequency text input
     frequencyField = [[UITextField alloc] initWithFrame:CGRectMake(12, yCurrent, 64, 32)];
     [frequencyField setBackgroundColor:[UIColor whiteColor]];
-    [frequencyField setBorderStyle:UITextBorderStyleLine];
     [frequencyField setTextColor:[UIColor blackColor]];
     [frequencyField setText:@"5"];
     [frequencyField setFont:inputFont];
     [self.view addSubview:frequencyField];
-    yCurrent += 32;
+    yCurrent += 24;
+    yCurrent += 12;
+    
+    // Add the Date label
+    UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, yCurrent, 120, 24)];
+    [dateLabel setBackgroundColor:[UIColor whiteColor]];
+    [dateLabel setTextColor:[UIColor grayColor]];
+    [dateLabel setText:@"DATE:"];
+    [dateLabel setFont:font];
+    [self.view addSubview:dateLabel];
+    yCurrent += 16;
+    yCurrent += 6;
+    
+    // Add the Date text input
+    dateField = [[UITextField alloc] initWithFrame:CGRectMake(12, yCurrent, 200, 32)];
+    [dateField setBackgroundColor:[UIColor whiteColor]];
+    [dateField setTextColor:[UIColor blackColor]];
+    [dateField setText:@"5"];
+    [dateField setFont:inputFont];
+    [self.view addSubview:dateField];
+    yCurrent += 24;
     yCurrent += 12;
 
     [self loadSettings];
@@ -118,9 +141,11 @@
     
     NSString *email     = [emailField text];
     NSString *frequency = [frequencyField text];
+    NSString *date      = [dateField text];
 
     [defaults setObject:email     forKey:@"email"];
     [defaults setObject:frequency forKey:@"frequency"];
+    [defaults setObject:date      forKey:@"date"];
 
     [defaults synchronize];
     [self.navigationController popViewControllerAnimated:YES];
@@ -133,6 +158,7 @@
     
     [emailField setText:[defaults objectForKey:@"email"]];
     [frequencyField setText:[defaults objectForKey:@"frequency"]];
+    [dateField setText:[defaults objectForKey:@"date"]];
 }
 
 @end

@@ -25,5 +25,8 @@
 @property (strong, retain)    NSURLConnection     *connection;
 @property (strong, retain)    NSMutableURLRequest *request;
 
+@property (nonatomic, retain) NSString *currentDate;
+@property (nonatomic, retain) UIScrollView *calendarViewContainer;
+@property                     NSInteger calendarViewContainerShown;
 
 @end
