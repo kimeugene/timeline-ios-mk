@@ -33,12 +33,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
 	
     // Do any additional setup after loading the view, typically from a nib.
     CGRect frame = self.view.frame;
     frame.origin.y = 0;
-    self.mapView = [[MKMapView alloc] initWithFrame:frame];
-    [self.view addSubview:self.mapView];
+    _mapView = [[MKMapView alloc] initWithFrame:frame];
+    [self.view addSubview:_mapView];
     
     // Initialize the calendar view container
     CGRect calendarContainerFrame = CGRectMake(30, 80, 260, 296);
@@ -333,9 +334,12 @@
 }
 
 - (void)plotTimeline:(NSData *)responseData {
+    [_mapView setDelegate:self];
+
     for (id<MKAnnotation> annotation in _mapView.annotations) {
         [_mapView removeAnnotation:annotation];
     }
+    [_mapView removeOverlays:_mapView.overlays];
     
     self.timeline = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil];
     
@@ -367,12 +371,10 @@
         
         
         
-        self.routeLine = [MKPolyline polylineWithCoordinates:coordinateArray count:cnt];
-        [self.mapView setVisibleMapRect:[self.routeLine boundingMapRect]];
+        MKPolyline *routeLine = [MKPolyline polylineWithCoordinates:coordinateArray count:cnt];
+        [_mapView setVisibleMapRect:[routeLine boundingMapRect]];
         
-        [self.mapView addOverlay:self.routeLine];
-        
-        
+        [_mapView addOverlay:routeLine];
         
         
         NSNumber *last_latitude = [[self.timeline lastObject] objectAtIndex:0];
@@ -389,41 +391,14 @@
     }
 }
 
-- (MKOverlayView*)mapView:(MKMapView*)theMapView viewForOverlay:(id <MKOverlay>)overlay
+- (MKOverlayView*)mapView:(MKMapView*)mapView viewForOverlay:(id <MKOverlay>)overlay
 {
-    MKPolylineView* lineView = [[MKPolylineView alloc] initWithPolyline:self.routeLine];
-    lineView.fillColor = [UIColor whiteColor];
+
+    MKPolylineView* lineView = [[MKPolylineView alloc] initWithPolyline:overlay];
+    lineView.fillColor = [UIColor greenColor];
     lineView.strokeColor = [UIColor orangeColor];
-    lineView.lineWidth = 4;
+    lineView.lineWidth = 1;
     return lineView;
-}
-
-- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
-    static NSString *identifier = @"MyLocation";
-    if ([annotation isKindOfClass:[TLLocation class]]) {
-        
-        MKAnnotationView *annotationView = (MKAnnotationView *) [_mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
-        if (annotationView == nil) {
-            annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
-            annotationView.enabled = YES;
-            annotationView.canShowCallout = YES;
-            annotationView.image = [UIImage imageNamed:@"pic.png"];
-            annotationView.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-        } else {
-            annotationView.annotation = annotation;
-        }
-        
-        return annotationView;
-    }
-    
-    return nil;
-}
-
-- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control {
-    TLLocation *location = (TLLocation*)view.annotation;
-    
-    NSDictionary *launchOptions = @{MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving};
-    [location.mapItem openInMapsWithLaunchOptions:launchOptions];
 }
 
 
