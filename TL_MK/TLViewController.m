@@ -123,7 +123,7 @@
 #else
 #endif
     
-    NSString *url = [NSString stringWithFormat: @"http://ec2-50-16-36-166.compute-1.amazonaws.com/get/%@/%@/150", email, date];
+    NSString *url = [NSString stringWithFormat: @"http://ec2-50-16-36-166.compute-1.amazonaws.com/get/%@/%@/750", email, date];
     
     ASIHTTPRequest *_request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:url]];
     __weak ASIHTTPRequest *request = _request;
@@ -395,9 +395,8 @@
 {
 
     MKPolylineView* lineView = [[MKPolylineView alloc] initWithPolyline:overlay];
-    lineView.fillColor = [UIColor greenColor];
-    lineView.strokeColor = [UIColor orangeColor];
-    lineView.lineWidth = 1;
+    lineView.strokeColor = [UIColor blueColor];
+    lineView.lineWidth = 7;
     return lineView;
 }
 
