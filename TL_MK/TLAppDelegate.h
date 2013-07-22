@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <CoreMotion/CoreMotion.h>
 #import "TLViewController.h"
 #import "TLBackgroundPingOperation.h"
 
@@ -22,5 +23,11 @@
 @property (strong, nonatomic) TLBackgroundPingOperation *backgroundPing;
 @property (strong, retain)    NSURLConnection     *connection;
 @property (strong, retain)    NSMutableURLRequest *request;
+@property (strong, retain)   CMMotionManager      *motionManager;
+@property NSInteger lastX;
+@property NSInteger lastY;
+@property NSInteger lastZ;
+
+@property NSTimeInterval lastGPSUpdateTimestamp;
 
 @end

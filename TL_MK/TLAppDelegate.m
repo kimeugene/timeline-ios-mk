@@ -13,6 +13,7 @@
 @synthesize operationQueue;
 @synthesize bgTask;
 @synthesize backgroundPing;
+@synthesize motionManager;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -31,6 +32,9 @@
     self.mainViewController = [[TLViewController alloc] init];
     self.navigationController = [[UINavigationController alloc] initWithRootViewController:self.mainViewController];
     
+    self.motionManager = [[CMMotionManager alloc] init];
+    [self.motionManager startAccelerometerUpdates];
+
     self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
     
@@ -65,23 +69,47 @@
         });
     }];
     
+    self.lastGPSUpdateTimestamp = [NSDate timeIntervalSinceReferenceDate];
+    
     // Start the long-running task and return immediately.
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        
+
         if(![backgroundPing isKindOfClass:[TLBackgroundPingOperation class]]) {
             NSLog(@"backgroundPing != nil");
             backgroundPing = [[TLBackgroundPingOperation alloc] init];
             [self.operationQueue addOperation:backgroundPing];
             
-            
             while (1) {
-                // NSLog(@"BGTime left: %f", [UIApplication sharedApplication].backgroundTimeRemaining);
-                [backgroundPing getLocation];
+                // The Keep-Alive code
+                NSTimeInterval current = [NSDate timeIntervalSinceReferenceDate];
+                if(current - self.lastGPSUpdateTimestamp > 9*60) {
+                    NSLog(@"elapsed timer for GPS background update. Asking GPS for an update.");
+                    [backgroundPing getLocation];
+                    NSLog(@"BGTime left: %f", [UIApplication sharedApplication].backgroundTimeRemaining);
+                    self.lastGPSUpdateTimestamp = [NSDate timeIntervalSinceReferenceDate];
+                }                
                 
-                NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-                NSInteger frequency = [[defaults objectForKey:@"frequency"] integerValue];
-                NSLog(@"sleeping for %i", frequency);
-                sleep(frequency);
+                [self.motionManager startAccelerometerUpdates];
+                sleep(1);
+                
+                // Patch into the accelerometer
+                CMAccelerometerData *newData = [self.motionManager accelerometerData];
+                NSLog(@"Accelerometer returned: x:%f y:%f z:%f", round([newData acceleration].x*100), round([newData acceleration].y*100), round([newData acceleration].z*100));
+                [self.motionManager stopAccelerometerUpdates];
+
+                if(abs(self.lastX) - abs(round([newData acceleration].x*100)) > 3 ||
+                   abs(self.lastY) - abs(round([newData acceleration].y*100)) > 3 ||
+                   abs(self.lastZ) - abs(round([newData acceleration].z*100)) > 3) {
+                    NSLog(@"PING GPS!");
+                    [backgroundPing getLocation];
+                }
+                    
+                self.lastX = round([newData acceleration].x*100);
+                self.lastY = round([newData acceleration].y*100);
+                self.lastZ = round([newData acceleration].z*100);
+                    
+                // Sleep for 60 until the next accelerometer check
+                sleep(60);
             }
             
         }

@@ -40,6 +40,7 @@
 		63E5030217025148000142B1 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63E5030117025148000142B1 /* CoreLocation.framework */; };
 		63E5030717028DA3000142B1 /* TLBackgroundPingOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 63E5030417028DA3000142B1 /* TLBackgroundPingOperation.m */; };
 		63E5030817028DA3000142B1 /* TLCoreLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 63E5030617028DA3000142B1 /* TLCoreLocation.m */; };
+		63ED78AB178B9ACB00E9184E /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63ED78AA178B9ACB00E9184E /* CoreMotion.framework */; };
 		C4832E131726004900973EE3 /* NavigationBar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C4832E111726004900973EE3 /* NavigationBar@2x.png */; };
 		C4858F6F17387A1800FCA9A0 /* TLSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C4858F6E17387A1800FCA9A0 /* TLSettingsViewController.m */; };
 		C4858F721738864100FCA9A0 /* TLConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = C4858F711738864100FCA9A0 /* TLConfig.m */; };
@@ -116,6 +117,7 @@
 		63E5030417028DA3000142B1 /* TLBackgroundPingOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TLBackgroundPingOperation.m; path = ../TLBackgroundPingOperation.m; sourceTree = "<group>"; };
 		63E5030517028DA3000142B1 /* TLCoreLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TLCoreLocation.h; path = ../TLCoreLocation.h; sourceTree = "<group>"; };
 		63E5030617028DA3000142B1 /* TLCoreLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TLCoreLocation.m; path = ../TLCoreLocation.m; sourceTree = "<group>"; };
+		63ED78AA178B9ACB00E9184E /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		C4832E111726004900973EE3 /* NavigationBar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "NavigationBar@2x.png"; path = "Images/Chrome/NavigationBar@2x.png"; sourceTree = "<group>"; };
 		C4858F6D17387A1800FCA9A0 /* TLSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLSettingsViewController.h; sourceTree = "<group>"; };
 		C4858F6E17387A1800FCA9A0 /* TLSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TLSettingsViewController.m; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63ED78AB178B9ACB00E9184E /* CoreMotion.framework in Frameworks */,
 				63E5030217025148000142B1 /* CoreLocation.framework in Frameworks */,
 				63E502FE1700C51E000142B1 /* AddressBook.framework in Frameworks */,
 				63E502F716FBD0C8000142B1 /* libz.dylib in Frameworks */,
@@ -169,6 +172,7 @@
 		63E5029B16FBBB09000142B1 = {
 			isa = PBXGroup;
 			children = (
+				63ED78AA178B9ACB00E9184E /* CoreMotion.framework */,
 				63E502AD16FBBB09000142B1 /* TL_MK */,
 				63E502A616FBBB09000142B1 /* Frameworks */,
 				63E502A516FBBB09000142B1 /* Products */,

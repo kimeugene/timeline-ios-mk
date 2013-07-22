@@ -99,8 +99,26 @@
     [self fetchLocationData];
 }
 
+
+- (int)getZoomLevel
+{
+    #define MERCATOR_RADIUS 85445659.44705395
+    #define MAX_GOOGLE_LEVELS 20
+
+    CLLocationDegrees longitudeDelta = _mapView.region.span.longitudeDelta;
+    CGFloat mapWidthInPixels = _mapView.bounds.size.width;
+    double zoomScale = longitudeDelta * MERCATOR_RADIUS * M_PI / (180.0 * mapWidthInPixels);
+    double zoomer = MAX_GOOGLE_LEVELS - log2( zoomScale );
+    if ( zoomer < 0 ) zoomer = 0;
+    //  zoomer = round(zoomer);
+    NSLog(@"Zoom level: %f", zoomer);
+    return (int) zoomer;
+}
+
 - (void)fetchLocationData
 {
+
+    
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *email = [defaults objectForKey:@"email"];
     NSString *date = [defaults objectForKey:@"date"];
@@ -123,7 +141,8 @@
 #else
 #endif
     
-    NSString *url = [NSString stringWithFormat: @"http://ec2-50-16-36-166.compute-1.amazonaws.com/get/%@/%@/750", email, date];
+    
+    NSString *url = [NSString stringWithFormat: @"http://ec2-50-16-36-166.compute-1.amazonaws.com/get/%@/%@/%i/750", email, date, [self getZoomLevel]];
     
     ASIHTTPRequest *_request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:url]];
     __weak ASIHTTPRequest *request = _request;
