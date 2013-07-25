@@ -70,7 +70,11 @@
 	
     // Do any additional setup after loading the view, typically from a nib.
     CGRect frame = self.view.frame;
-    frame.origin.y = 0;
+
+    // We want to start the MapView underneath the NavigationBar.
+    frame.origin.y = -44;
+    frame.size.height += 44;
+    
     _mapView = [[MKMapView alloc] initWithFrame:frame];
     [self.view addSubview:_mapView];
     
@@ -116,7 +120,7 @@
     [[self.navigationController.navigationBar.subviews objectAtIndex:1] addGestureRecognizer:navSingleTap];
     
     CGRect navframe = [[self.navigationController navigationBar] frame];
-    NSLog(@"Navframe Height=%f",navframe.size.height);
+    NSLog(@"Navframe %@",navframe);
 }
 
 - (void)calendarView:(TSQCalendarView *)calendarView didSelectDate:(NSDate *)date
@@ -383,11 +387,11 @@
 
 - (void)addSettingsButton
 {
-    UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithTitle:@"?"
-                                                                       style:UIBarButtonItemStyleBordered
+    UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithTitle:@"Options"
+                                                                       style:UIBarButtonItemStyleDone
                                                                       target:self
                                                                       action:@selector(settings)];
-//    self.navigationItem.rightBarButtonItem = settingsButton;
+    self.navigationItem.rightBarButtonItem = settingsButton;
 }
 
 - (void)settings
