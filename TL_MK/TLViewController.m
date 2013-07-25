@@ -20,6 +20,7 @@
 
 @interface TLViewController ()
 
+
 @end
 
 @implementation TLViewController
@@ -30,16 +31,61 @@
 @synthesize calendarViewContainer;
 @synthesize calendarViewContainerShown;
 
+@synthesize hudVisibility;
+
+- (void)handleTapGestureOnMapView:(UIGestureRecognizer *)gestureRecognizer {
+    
+    if(hudVisibility) {
+        
+        CGRect navigationGoToFrame = [self.navigationController navigationBar].frame;
+        navigationGoToFrame.origin.y = -44;
+        
+        [UIView beginAnimations:nil context:nil];
+        [UIView setAnimationDuration:0.5];
+        [UIView setAnimationDelay:0];
+        [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+        [self.navigationController navigationBar].frame = navigationGoToFrame;
+        [UIView commitAnimations];
+        
+        hudVisibility = NO;
+    } else {
+        CGRect navigationGoToFrame = [self.navigationController navigationBar].frame;
+        navigationGoToFrame.origin.y = 20;
+        
+        [UIView beginAnimations:nil context:nil];
+        [UIView setAnimationDuration:0.5];
+        [UIView setAnimationDelay:0];
+        [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+        [self.navigationController navigationBar].frame = navigationGoToFrame;
+        [UIView commitAnimations];
+        
+        hudVisibility = YES;
+    }
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    hudVisibility = YES;
 	
     // Do any additional setup after loading the view, typically from a nib.
     CGRect frame = self.view.frame;
-    frame.origin.y = 0;
+
+    // We want to start the MapView underneath the NavigationBar.
+    frame.origin.y = -44;
+    frame.size.height += 44;
+    
     _mapView = [[MKMapView alloc] initWithFrame:frame];
     [self.view addSubview:_mapView];
+    
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGestureOnMapView:)];
+    [_mapView addGestureRecognizer:tapGesture];
+
+    
+    UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc]
+                                                      initWithTarget:self
+                                                      action:@selector(handleLongPressGesture:)];
+//    [self.view addGestureRecognizer:longPressGesture];
     
     // Initialize the calendar view container
     CGRect calendarContainerFrame = CGRectMake(30, 80, 260, 296);
@@ -72,6 +118,9 @@
     navSingleTap.numberOfTapsRequired = 1;
     [[self.navigationController.navigationBar.subviews objectAtIndex:1] setUserInteractionEnabled:YES];
     [[self.navigationController.navigationBar.subviews objectAtIndex:1] addGestureRecognizer:navSingleTap];
+    
+    CGRect navframe = [[self.navigationController navigationBar] frame];
+    NSLog(@"Navframe %@",navframe);
 }
 
 - (void)calendarView:(TSQCalendarView *)calendarView didSelectDate:(NSDate *)date
@@ -130,7 +179,7 @@
     
     // Format the currently selected date for the navigation bar
     NSDateFormatter *formatDisplay = [[NSDateFormatter alloc] init];
-    [formatDisplay setDateFormat:@"MMMM d, yyyy"];
+    [formatDisplay setDateFormat:@"MMMM d"];
     NSString *dateFormattedString = [formatDisplay stringFromDate:dateFormatted];
     [self setTitle:dateFormattedString];
     
@@ -246,6 +295,23 @@
     [self navigateTimelineByDay:@"forward"];
 }
 
+- (void)setTitle:(NSString *)title
+{
+    [super setTitle:title];
+    UILabel *titleView = (UILabel *)self.navigationItem.titleView;
+    if (!titleView) {
+        titleView = [[UILabel alloc] initWithFrame:CGRectZero];
+        titleView.backgroundColor = [UIColor clearColor];
+        titleView.font = [UIFont boldSystemFontOfSize:20.0];
+        
+        titleView.textColor = [UIColor grayColor]; // Change to desired color
+        
+        self.navigationItem.titleView = titleView;
+    }
+    titleView.text = title;
+    [titleView sizeToFit];
+}
+
 - (void)navigateTimelineByDay:(NSString *)measure
 {
     // Read currently selected date
@@ -322,8 +388,8 @@
 
 - (void)addSettingsButton
 {
-    UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithTitle:@"?"
-                                                                       style:UIBarButtonItemStylePlain
+    UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithTitle:@"Options"
+                                                                       style:UIBarButtonItemStyleDone
                                                                       target:self
                                                                       action:@selector(settings)];
     self.navigationItem.rightBarButtonItem = settingsButton;
