@@ -29,4 +29,6 @@
 @property (nonatomic, retain) UIScrollView *calendarViewContainer;
 @property                     NSInteger calendarViewContainerShown;
 
+@property BOOL hudVisibility;
+
 @end

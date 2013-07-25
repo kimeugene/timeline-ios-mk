@@ -25,12 +25,18 @@
     //[self.operationQueue addOperation:backgroundPing];
     
     // Add the main view controller to the view stack
-    [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"NavigationBar.png"] forBarMetrics:UIBarMetricsDefault];
-    [[UINavigationBar appearance] setBarStyle:UIBarStyleBlackTranslucent];
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.mainViewController = [[TLViewController alloc] init];
     self.navigationController = [[UINavigationController alloc] initWithRootViewController:self.mainViewController];
+    
+//    [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"NavigationBar.png"] forBarMetrics:UIBarMetricsDefault];
+//    [[UINavigationBar appearance] setBarStyle:UIBarStyleBlackTranslucent];
+    [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"NavigationBar.png"] forBarMetrics:UIBarMetricsDefault];
+    [[UINavigationBar appearance] setShadowImage:[[UIImage alloc] init]];
+    [[UINavigationBar appearance] setTitleTextAttributes:@{
+                                UITextAttributeTextColor: [UIColor colorWithRed:55/255.0 green:55/255.0 blue:55/255.0 alpha:1.0]
+     }];
     
     self.motionManager = [[CMMotionManager alloc] init];
     [self.motionManager startAccelerometerUpdates];
