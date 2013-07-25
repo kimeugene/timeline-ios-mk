@@ -142,7 +142,8 @@
 #endif
     
     
-    NSString *url = [NSString stringWithFormat: @"http://ec2-50-16-36-166.compute-1.amazonaws.com/get/%@/%@/%i/750", email, date, [self getZoomLevel]];
+//    NSString *url = [NSString stringWithFormat: @"http://ec2-50-16-36-166.compute-1.amazonaws.com/get/%@/%@/%i/750", email, date, [self getZoomLevel]];
+    NSString *url = [NSString stringWithFormat: @"http://ec2-50-16-36-166.compute-1.amazonaws.com/get/%@/%@/750", email, date];
     
     ASIHTTPRequest *_request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:url]];
     __weak ASIHTTPRequest *request = _request;
@@ -417,6 +418,17 @@
     lineView.strokeColor = [UIColor blueColor];
     lineView.lineWidth = 7;
     return lineView;
+}
+
+- (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated{
+//    NSLog(@"region will change is called");
+    
+}
+
+- (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated{
+    MKZoomScale currentZoomScale = (CGFloat)(self.mapView.bounds.size.width / self.mapView.visibleMapRect.size.width);
+    NSLog(@"zoom scale %f", currentZoomScale);
+
 }
 
 
