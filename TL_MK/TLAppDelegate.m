@@ -35,9 +35,8 @@
     [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"NavigationBar.png"] forBarMetrics:UIBarMetricsDefault];
     [[UINavigationBar appearance] setShadowImage:[[UIImage alloc] init]];
     [[UINavigationBar appearance] setTitleTextAttributes:@{
-                                UITextAttributeTextColor: [UIColor colorWithRed:55/255.0 green:55/255.0 blue:55/255.0 alpha:1.0]
+                                UITextAttributeTextColor: [UIColor colorWithRed:55/255.0 green:55/255.0 blue:55/255.0 alpha:0.9]
      }];
-    [[UINavigationBar appearance] setAlpha:0.90];
     
     self.motionManager = [[CMMotionManager alloc] init];
     [self.motionManager startAccelerometerUpdates];

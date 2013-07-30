@@ -37,14 +37,22 @@
     
     if(hudVisibility) {
         
+        // Hide navigation
         CGRect navigationGoToFrame = [self.navigationController navigationBar].frame;
         navigationGoToFrame.origin.y = -44;
+        
+        // Hide Timelime Control
+        CGRect timelineGoToFrame = self.timelineControlView.frame;
+        timelineGoToFrame.origin.x += 60;
         
         [UIView beginAnimations:nil context:nil];
         [UIView setAnimationDuration:0.5];
         [UIView setAnimationDelay:0];
         [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
         [self.navigationController navigationBar].frame = navigationGoToFrame;
+        [self.navigationController navigationBar].alpha = 0;
+        self.timelineControlView.frame = timelineGoToFrame;
+        [self.timelineControlView setAlpha:0];
         [UIView commitAnimations];
         
         hudVisibility = NO;
@@ -52,11 +60,17 @@
         CGRect navigationGoToFrame = [self.navigationController navigationBar].frame;
         navigationGoToFrame.origin.y = 20;
         
+        CGRect timelineGoToFrame = self.timelineControlView.frame;
+        timelineGoToFrame.origin.x = 260;
+        
         [UIView beginAnimations:nil context:nil];
         [UIView setAnimationDuration:0.5];
         [UIView setAnimationDelay:0];
         [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
         [self.navigationController navigationBar].frame = navigationGoToFrame;
+        [self.navigationController navigationBar].alpha = 0.9;
+        self.timelineControlView.frame = timelineGoToFrame;
+        [self.timelineControlView setAlpha:0.65];
         [UIView commitAnimations];
         
         hudVisibility = YES;
@@ -113,6 +127,7 @@
     [self addLeftRightStepButtons];
     [self addLeftRightDayButtons];
     [self addSettingsButton];
+    [self addTimelineControl];
 
     UITapGestureRecognizer *navSingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toggleCalendar)];
     navSingleTap.numberOfTapsRequired = 1;
@@ -231,7 +246,7 @@
 - (void) addLeftRightStepButtons {
     
     // Add the left button
-    UIButton *leftStepButton = [[UIButton alloc] initWithFrame:CGRectMake(100, self.view.frame.size.height - 48, 40, 40)];
+    UIButton *leftStepButton = [[UIButton alloc] initWithFrame:CGRectMake(100, self.view.frame.size.height - 36, 40, 40)];
     [leftStepButton setBackgroundColor:[UIColor colorWithRed:35.0/255
                                                        green:35.0/255
                                                         blue:35.0/255
@@ -241,7 +256,7 @@
     [self.view addSubview:leftStepButton];
     
     // Add the right button
-    UIButton *rightStepButton = [[UIButton alloc] initWithFrame:CGRectMake(176, self.view.frame.size.height - 48, 40, 40)];
+    UIButton *rightStepButton = [[UIButton alloc] initWithFrame:CGRectMake(176, self.view.frame.size.height - 36, 40, 40)];
     [rightStepButton setBackgroundColor:[UIColor colorWithRed:35.0/255
                                                         green:35.0/255
                                                          blue:35.0/255
@@ -254,7 +269,7 @@
 - (void) addLeftRightDayButtons {
     
     // Add the left button
-    UIButton *leftDayButton = [[UIButton alloc] initWithFrame:CGRectMake(12, self.view.frame.size.height - 48, 40, 40)];
+    UIButton *leftDayButton = [[UIButton alloc] initWithFrame:CGRectMake(12, self.view.frame.size.height - 36, 40, 40)];
     [leftDayButton setBackgroundColor:[UIColor colorWithRed:35.0/255
                                                        green:35.0/255
                                                         blue:35.0/255
@@ -264,7 +279,7 @@
     [self.view addSubview:leftDayButton];
     
     // Add the right button
-    UIButton *rightDayButton = [[UIButton alloc] initWithFrame:CGRectMake(268, self.view.frame.size.height - 48, 40, 40)];
+    UIButton *rightDayButton = [[UIButton alloc] initWithFrame:CGRectMake(268, self.view.frame.size.height - 36, 40, 40)];
     [rightDayButton setBackgroundColor:[UIColor colorWithRed:35.0/255
                                                         green:35.0/255
                                                          blue:35.0/255
@@ -388,10 +403,19 @@
 - (void)addSettingsButton
 {
     UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithTitle:@"Options"
-                                                                       style:UIBarButtonItemStyleDone
+                                                                       style:UIBarButtonItemStylePlain
                                                                       target:self
                                                                       action:@selector(settings)];
     self.navigationItem.rightBarButtonItem = settingsButton;
+}
+
+- (void)addTimelineControl
+{
+    self.timelineControlView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"TimelineControl.png"]];
+    [self.timelineControlView setUserInteractionEnabled:YES];
+    self.timelineControlView.frame = CGRectMake(260, 16, 44, 188);
+    [self.timelineControlView setAlpha:0.65];
+    [self.view addSubview:self.timelineControlView];
 }
 
 - (void)settings
