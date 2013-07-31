@@ -30,6 +30,8 @@
 @property (nonatomic, retain) UIScrollView *calendarViewContainer;
 @property                     NSInteger calendarViewContainerShown;
 
+@property (nonatomic, retain) UIImageView *timelineControlView;
+
 @property BOOL hudVisibility;
 
 @end
