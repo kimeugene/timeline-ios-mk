@@ -30,7 +30,7 @@
 @synthesize currentDate;
 @synthesize calendarViewContainer;
 @synthesize calendarViewContainerShown;
-
+@synthesize currentZoomLevel;
 @synthesize hudVisibility;
 
 - (void)handleTapGestureOnMapView:(UIGestureRecognizer *)gestureRecognizer {
@@ -134,7 +134,7 @@
     [defaults setObject:dateString forKey:@"date"];
     [defaults synchronize];
     
-    [self fetchLocationData];
+    [self fetchLocationData:-1 withInit:YES];
     [self toggleCalendar];
 }
 
@@ -145,28 +145,17 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [self fetchLocationData];
+    // set current zoom scale
+    MKZoomScale zoomScale = (CGFloat)(self.mapView.bounds.size.width / self.mapView.visibleMapRect.size.width);
+    self.currentZoomLevel = abs(round(log2(zoomScale)));
+
+    [self fetchLocationData:-1 withInit:YES];
 }
 
 
-- (int)getZoomLevel
+- (void)fetchLocationData:(NSInteger)zoomLevel withInit:(BOOL)init
 {
-    #define MERCATOR_RADIUS 85445659.44705395
-    #define MAX_GOOGLE_LEVELS 20
-
-    CLLocationDegrees longitudeDelta = _mapView.region.span.longitudeDelta;
-    CGFloat mapWidthInPixels = _mapView.bounds.size.width;
-    double zoomScale = longitudeDelta * MERCATOR_RADIUS * M_PI / (180.0 * mapWidthInPixels);
-    double zoomer = MAX_GOOGLE_LEVELS - log2( zoomScale );
-    if ( zoomer < 0 ) zoomer = 0;
-    //  zoomer = round(zoomer);
-    NSLog(@"Zoom level: %f", zoomer);
-    return (int) zoomer;
-}
-
-- (void)fetchLocationData
-{
-
+    
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *email = [defaults objectForKey:@"email"];
@@ -191,8 +180,8 @@
 #endif
     
     
-//    NSString *url = [NSString stringWithFormat: @"http://ec2-50-16-36-166.compute-1.amazonaws.com/get/%@/%@/%i/750", email, date, [self getZoomLevel]];
-    NSString *url = [NSString stringWithFormat: @"http://ec2-50-16-36-166.compute-1.amazonaws.com/get/%@/%@/750", email, date];
+    NSString *url = [NSString stringWithFormat: @"http://ec2-50-16-36-166.compute-1.amazonaws.com/get/%@/%@/%i/750", email, date, zoomLevel];
+//    NSString *url = [NSString stringWithFormat: @"http://ec2-50-16-36-166.compute-1.amazonaws.com/get/%@/%@/750", email, date];
     
     ASIHTTPRequest *_request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:url]];
     __weak ASIHTTPRequest *request = _request;
@@ -205,8 +194,8 @@
     [request setCompletionBlock:^{
         [MBProgressHUD hideHUDForView:self.view animated:YES];
         NSString *responseString = [request responseString];
-        [self plotTimeline:request.responseData];
-        NSLog(@"Response: %@", responseString);
+        [self plotTimeline:request.responseData withInit:init];
+//        NSLog(@"Response: %@", responseString);
     }];
     [request setFailedBlock:^{
         [MBProgressHUD hideHUDForView:self.view animated:YES];
@@ -333,7 +322,7 @@
     [defaults synchronize];
     
     // Fetch the new lcoation data
-    [self fetchLocationData];
+    [self fetchLocationData:-1 withInit:YES];
 
 }
 
@@ -419,7 +408,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)plotTimeline:(NSData *)responseData {
+- (void)plotTimeline:(NSData *)responseData withInit:(BOOL) init {
     [_mapView setDelegate:self];
 
     for (id<MKAnnotation> annotation in _mapView.annotations) {
@@ -458,7 +447,10 @@
         
         
         MKPolyline *routeLine = [MKPolyline polylineWithCoordinates:coordinateArray count:cnt];
-        [_mapView setVisibleMapRect:[routeLine boundingMapRect]];
+        if (init) {
+          [_mapView setVisibleMapRect:[routeLine boundingMapRect]];
+        }
+
         
         [_mapView addOverlay:routeLine];
         
@@ -492,9 +484,22 @@
 }
 
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated{
-    MKZoomScale currentZoomScale = (CGFloat)(self.mapView.bounds.size.width / self.mapView.visibleMapRect.size.width);
-    NSLog(@"zoom scale %f", currentZoomScale);
-
+    
+    MKZoomScale zoomScale = (CGFloat)(self.mapView.bounds.size.width / self.mapView.visibleMapRect.size.width);
+    double zoomExponent = abs(round(log2(zoomScale)));
+    
+    NSLog(@"zoom scale %f", zoomExponent);
+    NSLog(@"current zoom scale %ld", (long)self.currentZoomLevel);
+    
+    
+    if (zoomExponent != self.currentZoomLevel) {
+        
+        if (abs(zoomExponent - self.currentZoomLevel) > 1) {
+            [self fetchLocationData: zoomExponent withInit:NO];
+            self.currentZoomLevel = zoomExponent;
+        }
+    }
+    
 }
 
 

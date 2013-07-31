@@ -26,6 +26,7 @@
 @property (strong, retain)    NSMutableURLRequest *request;
 
 @property (nonatomic, retain) NSString *currentDate;
+@property                     NSInteger currentZoomLevel;
 @property (nonatomic, retain) UIScrollView *calendarViewContainer;
 @property                     NSInteger calendarViewContainerShown;
 
