@@ -46,33 +46,85 @@
 
 - (void)locationUpdate:(CLLocation *)location {    
     // NSLog(@"TBackgroundPingOperation locationUpdate: location.timestamp: %@", location.timestamp);
-     NSLog(@"TBackgroundPingOperation locationUpdate: %@", [location description]);
     
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://ec2-50-16-36-166.compute-1.amazonaws.com/post"]];
-    self.request = [[NSMutableURLRequest alloc] initWithURL:url];
-    NSDate *date = [[NSDate alloc] init];
-    NSTimeInterval currentTimestamp = [date timeIntervalSince1970];
+    BOOL valid = [self isValidLocation:location withOldLocation:self.oldLocation];
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *email = [defaults objectForKey:@"email"];
-    
-    // Post:
-    NSString *postString = [NSString stringWithFormat:@"email=%@&timestamp=%i&long=%f&lat=%f", email, abs(currentTimestamp), location.coordinate.longitude, location.coordinate.latitude];
-    [self.request setHTTPMethod:@"POST"];
-    [self.request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-    [self.request setValue:[NSString stringWithFormat:@"%d", [postString length]] forHTTPHeaderField:@"Content-Length"];
-    [self.request setHTTPBody:[postString dataUsingEncoding:NSUTF8StringEncoding]];
-    
-    // Get
-    // [self.request setHTTPMethod:@"GET"];
-    
-    connection = [[NSURLConnection alloc] initWithRequest:self.request
-                                                 delegate:self
-                                         startImmediately:YES];
-    requestNumber++;
-    
-    [coreLocation.locMgr stopUpdatingLocation];
+    if (valid == YES) {
+        NSLog(@"TBackgroundPingOperation locationUpdate: %@", [location description]);
+        
+        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://ec2-50-16-36-166.compute-1.amazonaws.com/post"]];
+        self.request = [[NSMutableURLRequest alloc] initWithURL:url];
+        NSDate *date = [[NSDate alloc] init];
+        NSTimeInterval currentTimestamp = [date timeIntervalSince1970];
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *email = [defaults objectForKey:@"email"];
+        
+        // Post:
+        NSString *postString = [NSString stringWithFormat:@"email=%@&timestamp=%i&long=%f&lat=%f", email, abs(currentTimestamp), location.coordinate.longitude, location.coordinate.latitude];
+        [self.request setHTTPMethod:@"POST"];
+        [self.request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+        [self.request setValue:[NSString stringWithFormat:@"%d", [postString length]] forHTTPHeaderField:@"Content-Length"];
+        [self.request setHTTPBody:[postString dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        // Get
+        // [self.request setHTTPMethod:@"GET"];
+        
+        connection = [[NSURLConnection alloc] initWithRequest:self.request
+                                                     delegate:self
+                                             startImmediately:YES];
+        requestNumber++;
+        
+        
+        self.oldLocation = location;
+        
+    }
+    else {
+        NSLog(@"TBackgroundPingOperation invalid location");
+    }
 
+    [coreLocation.locMgr stopUpdatingLocation];
+    
+}
+
+- (BOOL)isValidLocation:(CLLocation *)newLocation withOldLocation:(CLLocation *)oldLocation {
+    
+    // Filter out nil locations
+    if (!newLocation) return NO;
+    
+    // Filter out points by invalid accuracy
+    if (newLocation.horizontalAccuracy < 0) return NO;
+    if (newLocation.horizontalAccuracy > 66) return NO;
+    
+    // Filter out points by invalid accuracy
+#if !TARGET_IPHONE_SIMULATOR
+    if (newLocation.verticalAccuracy < 0) return NO;
+#endif
+    
+    // Filter out points that are out of order
+    NSTimeInterval secondsSinceLastPoint = [newLocation.timestamp timeIntervalSinceDate:oldLocation.timestamp];
+    if (secondsSinceLastPoint < 0) return NO;
+    
+    // Make sure the update is new not cached
+    NSTimeInterval locationAge = -[newLocation.timestamp timeIntervalSinceNow];
+    if (locationAge > 5.0) return NO;
+    
+    if (oldLocation){
+        // Check to see if old and new are the same
+        if ((oldLocation.coordinate.latitude == newLocation.coordinate.latitude) && (oldLocation.coordinate.longitude == newLocation.coordinate.longitude))
+            return NO;
+        
+        CLLocationDistance dist = [newLocation distanceFromLocation:self.oldLocation];
+        
+        if(dist > newLocation.horizontalAccuracy)
+        {
+            //.....
+        }
+        
+    }
+    
+    return YES;
+    
 }
 
 - (void)locationError:(NSError *)error {

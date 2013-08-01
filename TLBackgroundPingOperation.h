@@ -14,6 +14,7 @@
 @property (strong, retain)    NSURLConnection     *connection;
 @property (strong, retain)    NSMutableURLRequest *request;
 @property                     NSInteger            requestNumber;
+@property (nonatomic, copy)    CLLocation           *oldLocation;
 
 - (void)getLocation;
 
