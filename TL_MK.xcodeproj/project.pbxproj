@@ -42,7 +42,10 @@
 		63E5030817028DA3000142B1 /* TLCoreLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 63E5030617028DA3000142B1 /* TLCoreLocation.m */; };
 		63ED78AB178B9ACB00E9184E /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63ED78AA178B9ACB00E9184E /* CoreMotion.framework */; };
 		C43EE3A917A0A5D7005B9D87 /* NavigationBar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C43EE3A817A0A5D7005B9D87 /* NavigationBar@2x.png */; };
-		C47D3BCE17A739D1007476F0 /* TimelineControl.png in Resources */ = {isa = PBXBuildFile; fileRef = C47D3BCD17A739D1007476F0 /* TimelineControl.png */; };
+		C45B054517A9DF0D00EDA47D /* TimelineControlFastForward@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C45B054117A9DF0D00EDA47D /* TimelineControlFastForward@2x.png */; };
+		C45B054617A9DF0D00EDA47D /* TimelineControlLine@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C45B054217A9DF0D00EDA47D /* TimelineControlLine@2x.png */; };
+		C45B054717A9DF0D00EDA47D /* TimelineControlPlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C45B054317A9DF0D00EDA47D /* TimelineControlPlay@2x.png */; };
+		C45B054817A9DF0D00EDA47D /* TimelineControlRewind@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C45B054417A9DF0D00EDA47D /* TimelineControlRewind@2x.png */; };
 		C4858F6F17387A1800FCA9A0 /* TLSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C4858F6E17387A1800FCA9A0 /* TLSettingsViewController.m */; };
 		C4858F721738864100FCA9A0 /* TLConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = C4858F711738864100FCA9A0 /* TLConfig.m */; };
 		C4E49259174AE70400A1478B /* TSQCalendarCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C4E49252174AE70400A1478B /* TSQCalendarCell.m */; };
@@ -120,7 +123,10 @@
 		63E5030617028DA3000142B1 /* TLCoreLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TLCoreLocation.m; path = ../TLCoreLocation.m; sourceTree = "<group>"; };
 		63ED78AA178B9ACB00E9184E /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		C43EE3A817A0A5D7005B9D87 /* NavigationBar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NavigationBar@2x.png"; sourceTree = "<group>"; };
-		C47D3BCD17A739D1007476F0 /* TimelineControl.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = TimelineControl.png; path = Images/TimelineControl.png; sourceTree = "<group>"; };
+		C45B054117A9DF0D00EDA47D /* TimelineControlFastForward@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TimelineControlFastForward@2x.png"; sourceTree = "<group>"; };
+		C45B054217A9DF0D00EDA47D /* TimelineControlLine@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TimelineControlLine@2x.png"; sourceTree = "<group>"; };
+		C45B054317A9DF0D00EDA47D /* TimelineControlPlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TimelineControlPlay@2x.png"; sourceTree = "<group>"; };
+		C45B054417A9DF0D00EDA47D /* TimelineControlRewind@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TimelineControlRewind@2x.png"; sourceTree = "<group>"; };
 		C4858F6D17387A1800FCA9A0 /* TLSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLSettingsViewController.h; sourceTree = "<group>"; };
 		C4858F6E17387A1800FCA9A0 /* TLSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TLSettingsViewController.m; sourceTree = "<group>"; };
 		C4858F701738864100FCA9A0 /* TLConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLConfig.h; sourceTree = "<group>"; };
@@ -289,10 +295,21 @@
 			name = MBProgressHUD;
 			sourceTree = "<group>";
 		};
+		C418868917A9DC7C005B266C /* TimelineControl */ = {
+			isa = PBXGroup;
+			children = (
+				C45B054117A9DF0D00EDA47D /* TimelineControlFastForward@2x.png */,
+				C45B054217A9DF0D00EDA47D /* TimelineControlLine@2x.png */,
+				C45B054317A9DF0D00EDA47D /* TimelineControlPlay@2x.png */,
+				C45B054417A9DF0D00EDA47D /* TimelineControlRewind@2x.png */,
+			);
+			name = TimelineControl;
+			sourceTree = "<group>";
+		};
 		C4832E0F1726001B00973EE3 /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				C47D3BCD17A739D1007476F0 /* TimelineControl.png */,
+				C418868917A9DC7C005B266C /* TimelineControl */,
 				C4E4925E174AF2A900A1478B /* TSQCalendar */,
 				C4832E101726002100973EE3 /* Chrome */,
 			);
@@ -412,7 +429,10 @@
 				C4E49271174AF2A900A1478B /* CalendarTodaysDate.png in Resources */,
 				C4E49272174AF2A900A1478B /* CalendarTodaysDate@2x.png in Resources */,
 				C43EE3A917A0A5D7005B9D87 /* NavigationBar@2x.png in Resources */,
-				C47D3BCE17A739D1007476F0 /* TimelineControl.png in Resources */,
+				C45B054517A9DF0D00EDA47D /* TimelineControlFastForward@2x.png in Resources */,
+				C45B054617A9DF0D00EDA47D /* TimelineControlLine@2x.png in Resources */,
+				C45B054717A9DF0D00EDA47D /* TimelineControlPlay@2x.png in Resources */,
+				C45B054817A9DF0D00EDA47D /* TimelineControlRewind@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

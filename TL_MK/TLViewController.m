@@ -33,6 +33,11 @@
 @synthesize currentZoomLevel;
 @synthesize hudVisibility;
 
+@synthesize timelineControlLine;
+@synthesize timelineControlPlay;
+@synthesize timelineControlFastForward;
+@synthesize timelineControlRewind;
+
 - (void)handleTapGestureOnMapView:(UIGestureRecognizer *)gestureRecognizer {
     
     if(hudVisibility) {
@@ -42,8 +47,8 @@
         navigationGoToFrame.origin.y = -44;
         
         // Hide Timelime Control
-        CGRect timelineGoToFrame = self.timelineControlView.frame;
-        timelineGoToFrame.origin.x += 60;
+        // CGRect timelineGoToFrame = self.timelineControlView.frame;
+        // timelineGoToFrame.origin.x += 60;
         
         [UIView beginAnimations:nil context:nil];
         [UIView setAnimationDuration:0.5];
@@ -51,8 +56,8 @@
         [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
         [self.navigationController navigationBar].frame = navigationGoToFrame;
         [self.navigationController navigationBar].alpha = 0;
-        self.timelineControlView.frame = timelineGoToFrame;
-        [self.timelineControlView setAlpha:0];
+        // self.timelineControlView.frame = timelineGoToFrame;
+        // [self.timelineControlView setAlpha:0];
         [UIView commitAnimations];
         
         hudVisibility = NO;
@@ -60,8 +65,8 @@
         CGRect navigationGoToFrame = [self.navigationController navigationBar].frame;
         navigationGoToFrame.origin.y = 20;
         
-        CGRect timelineGoToFrame = self.timelineControlView.frame;
-        timelineGoToFrame.origin.x = 260;
+        // CGRect timelineGoToFrame = self.timelineControlView.frame;
+        // timelineGoToFrame.origin.x = 260;
         
         [UIView beginAnimations:nil context:nil];
         [UIView setAnimationDuration:0.5];
@@ -69,8 +74,8 @@
         [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
         [self.navigationController navigationBar].frame = navigationGoToFrame;
         [self.navigationController navigationBar].alpha = 0.9;
-        self.timelineControlView.frame = timelineGoToFrame;
-        [self.timelineControlView setAlpha:0.65];
+        // self.timelineControlView.frame = timelineGoToFrame;
+        // [self.timelineControlView setAlpha:0.65];
         [UIView commitAnimations];
         
         hudVisibility = YES;
@@ -80,21 +85,25 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    // Initialize core hidden variables
     hudVisibility = YES;
-	
-    // Do any additional setup after loading the view, typically from a nib.
-    CGRect frame = self.view.frame;
-
+    
+    // Initialize the frames for key UI elements
+    self.timelineControlLineFrame        = CGRectMake(275, 20,  15, 138);
+    self.timelineControlRewindFrame      = CGRectMake(266, 20,  33, 33);
+    self.timelineControlFastForwardFrame = CGRectMake(266, 132, 33, 33);
+    self.timelineControlPlayFrame        = CGRectMake(262, 73,  40, 40);
+    
     // We want to start the MapView underneath the NavigationBar.
+    CGRect frame = self.view.frame;
     frame.origin.y = -44;
     frame.size.height += 44;
-    
     _mapView = [[MKMapView alloc] initWithFrame:frame];
     [self.view addSubview:_mapView];
     
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGestureOnMapView:)];
     [_mapView addGestureRecognizer:tapGesture];
-
     
     UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc]
                                                       initWithTarget:self
@@ -401,11 +410,37 @@
 
 - (void)addTimelineControl
 {
+    self.timelineControlLine        = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"TimelineControlLine@2x.png"]];
+    self.timelineControlRewind      = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"TimelineControlRewind@2x.png"]];
+    self.timelineControlFastForward = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"TimelineControlFastForward@2x.png"]];
+    self.timelineControlPlay        = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"TimelineControlPlay@2x.png"]];
+    
+    [self.timelineControlLine        setUserInteractionEnabled:YES];
+    [self.timelineControlRewind      setUserInteractionEnabled:YES];
+    [self.timelineControlFastForward setUserInteractionEnabled:YES];
+    [self.timelineControlPlay        setUserInteractionEnabled:YES];
+    
+    self.timelineControlLine.frame        = self.timelineControlLineFrame;
+    self.timelineControlRewind.frame      = self.timelineControlRewindFrame;
+    self.timelineControlFastForward.frame = self.timelineControlFastForwardFrame;
+    self.timelineControlPlay.frame        = self.timelineControlPlayFrame;
+    
+    [self.timelineControlRewind      addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(previousDay)]];
+    [self.timelineControlFastForward addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(nextDay)]];
+    
+    [self.view addSubview:self.timelineControlLine];
+    [self.view addSubview:self.timelineControlRewind];
+    [self.view addSubview:self.timelineControlFastForward];
+    [self.view addSubview:self.timelineControlPlay];
+    
+    
+    /*
     self.timelineControlView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"TimelineControl.png"]];
     [self.timelineControlView setUserInteractionEnabled:YES];
     self.timelineControlView.frame = CGRectMake(260, 16, 44, 188);
     [self.timelineControlView setAlpha:0.65];
     [self.view addSubview:self.timelineControlView];
+     */
 }
 
 - (void)settings

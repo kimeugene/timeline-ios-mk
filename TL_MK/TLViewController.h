@@ -30,7 +30,16 @@
 @property (nonatomic, retain) UIScrollView *calendarViewContainer;
 @property                     NSInteger calendarViewContainerShown;
 
-@property (nonatomic, retain) UIImageView *timelineControlView;
+@property (nonatomic, retain) UIImageView *timelineControlLine;
+@property (nonatomic, retain) UIImageView *timelineControlPlay;
+@property (nonatomic, retain) UIImageView *timelineControlRewind;
+@property (nonatomic, retain) UIImageView *timelineControlFastForward;
+
+@property CGRect timelineControlLineFrame;
+@property CGRect timelineControlPlayFrame;
+@property CGRect timelineControlRewindFrame;
+@property CGRect timelineControlFastForwardFrame;
+
 
 @property BOOL hudVisibility;
 
