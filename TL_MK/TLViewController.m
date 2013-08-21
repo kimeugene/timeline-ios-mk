@@ -158,7 +158,7 @@
     [defaults setObject:dateString forKey:@"date"];
     [defaults synchronize];
     
-    [self fetchLocationData:-1 withInit:YES];
+    [self fetchLocationData:1 withInit:YES];
     [self toggleCalendar];
 }
 
@@ -173,7 +173,7 @@
     MKZoomScale zoomScale = (CGFloat)(self.mapView.bounds.size.width / self.mapView.visibleMapRect.size.width);
     self.currentZoomLevel = abs(round(log2(zoomScale)));
 
-    [self fetchLocationData:-1 withInit:YES];
+    [self fetchLocationData:1 withInit:YES];
 }
 
 
@@ -346,7 +346,7 @@
     [defaults synchronize];
     
     // Fetch the new lcoation data
-    [self fetchLocationData:-1 withInit:YES];
+    [self fetchLocationData:1 withInit:YES];
 
 }
 
@@ -544,20 +544,20 @@
 
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated{
     
-    MKZoomScale zoomScale = (CGFloat)(self.mapView.bounds.size.width / self.mapView.visibleMapRect.size.width);
-    double zoomExponent = abs(round(log2(zoomScale)));
+    //MKZoomScale zoomScale = (CGFloat)(self.mapView.bounds.size.width / self.mapView.visibleMapRect.size.width);
+    //double zoomExponent = abs(round(log2(zoomScale)));
     
-    NSLog(@"zoom scale %f", zoomExponent);
-    NSLog(@"current zoom scale %ld", (long)self.currentZoomLevel);
+    //NSLog(@"zoom scale %f", zoomExponent);
+    //NSLog(@"current zoom scale %ld", (long)self.currentZoomLevel);
     
     
-    if (zoomExponent != self.currentZoomLevel) {
-        
-        if (abs(zoomExponent - self.currentZoomLevel) > 1) {
-            [self fetchLocationData: zoomExponent withInit:NO];
-            self.currentZoomLevel = zoomExponent;
-        }
-    }
+    //if (zoomExponent != self.currentZoomLevel) {
+    //
+    //    if (abs(zoomExponent - self.currentZoomLevel) > 1) {
+    //        [self fetchLocationData: zoomExponent withInit:NO];
+    //        self.currentZoomLevel = zoomExponent;
+    //    }
+    //}
     
 }
 
