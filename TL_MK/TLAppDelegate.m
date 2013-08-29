@@ -109,7 +109,7 @@
                     NSLog(@"PING GPS!");
                     [backgroundPing getLocation];
                 }
-                    
+                
                 self.lastX = round([newData acceleration].x*100);
                 self.lastY = round([newData acceleration].y*100);
                 self.lastZ = round([newData acceleration].z*100);

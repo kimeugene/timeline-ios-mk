@@ -172,7 +172,7 @@
     // set current zoom scale
     MKZoomScale zoomScale = (CGFloat)(self.mapView.bounds.size.width / self.mapView.visibleMapRect.size.width);
     self.currentZoomLevel = abs(round(log2(zoomScale)));
-
+    
     [self fetchLocationData:1 withInit:YES];
 }
 
