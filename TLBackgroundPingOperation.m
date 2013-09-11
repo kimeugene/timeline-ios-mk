@@ -110,12 +110,46 @@
         }
     }
 
+    
+    
     NSArray *datapoint = [[NSArray alloc] initWithObjects:
                            [NSString stringWithFormat:@"%d", abs(currentTimestamp)],
                            [NSString stringWithFormat:@"%f", location.coordinate.longitude],
                            [NSString stringWithFormat:@"%f",location.coordinate.latitude],
                            [NSString stringWithFormat:@"%d", code], nil];
-        
+
+    NSLog(@"Current speed: %f", location.speed);
+    // walking - 1.5 meter/s
+    // bike - 7 meter/s
+    NSNumber *frequency;
+    if (location.speed < 0)
+    {
+        frequency = [NSNumber numberWithInt:60];
+        NSLog(@"Negative speed");
+    }
+    if (location.speed > 0 && location.speed <= 1.5)
+    {
+        frequency = [NSNumber numberWithInt:30];
+        NSLog(@"Walking");
+    }
+
+    if (location.speed > 1.5 && location.speed <= 7)
+    {
+        frequency = [NSNumber numberWithInt:20];
+        NSLog(@"Biking");
+    }
+
+    if (location.speed > 7)
+    {
+        frequency = [NSNumber numberWithInt:10];
+        NSLog(@"Driving or whatever");
+    }
+
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:frequency forKey:@"update_frequency"];
+    [defaults synchronize];
+    
+    
     NSString *datapoint_string = [datapoint componentsJoinedByString:@"|"];
         
     [data addObject:datapoint_string];
@@ -124,9 +158,16 @@
     NSLog(@"TBackgroundPingOperation locationUpdate: %@", [location description]);
         
     self.oldLocation = location;
-        
-    [coreLocation.locMgr stopUpdatingLocation];
-    
+
+    // stop GPS only after getting a somewhat valid datapoint
+    if (code != 3)
+    {
+        [coreLocation.locMgr stopUpdatingLocation];
+    }
+    else
+    {
+        NSLog(@"Got invalid datapoint");
+    }
 }
 
 - (int)isValidLocation:(CLLocation *)newLocation withOldLocation:(CLLocation *)oldLocation {

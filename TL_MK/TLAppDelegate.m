@@ -115,7 +115,12 @@
                 self.lastZ = round([newData acceleration].z*100);
                     
                 // Sleep for 60 until the next accelerometer check
-                sleep(60);
+                NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                NSNumber *freq = [defaults objectForKey:@"update_frequency"];
+                int frequency = [freq intValue];
+                NSLog(@"Current frequency: %d", frequency);
+                
+                sleep(frequency);
             }
             
         }
